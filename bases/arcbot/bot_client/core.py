@@ -13,6 +13,7 @@ DISCORD_KEY = os.getenv('BOT_TOKEN')
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 client = discord.Client(intents=intents)
 PREFIX = '$'
@@ -20,6 +21,10 @@ PREFIX = '$'
 
 def start_bot():
     client.run(DISCORD_KEY)
+
+
+def get_client():
+    return client
 
 
 def wait_for_bot():

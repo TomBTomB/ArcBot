@@ -12,9 +12,10 @@ packages = [
 python = "^3.10"
 poetry-multiproject-plugin = "^1.2.1"
 poetry-polylith-plugin = "^1.6.1"
-discord = "^2.2.3"
 python-dotenv = "^1.0.0"
 pynacl = "^1.5.0"
+discord-py = "2.2.2"
+dpytest = "^0.6.5"
 
 
 [build-system]

@@ -1,29 +1,19 @@
-import multiprocessing
-import unittest
+import discord.ext.test as dpytest
+import pytest
+import pytest_asyncio
 
 from bases.arcbot.bot_client import core as bot_client
-from components.arcbot.bot_action.core import MockChannel
 
 
-class Message:
-    def __init__(self, content):
-        self.content = content
-        self.author = "test"
-        self.channel = MockChannel()
+@pytest_asyncio.fixture
+async def bot():
+    b = bot_client.get_client()
+    await b._async_setup_hook()
+    dpytest.configure(b)
+    return b
 
 
-class TestCore(unittest.IsolatedAsyncioTestCase):
-
-    async def asyncSetUp(self) -> None:
-        self.thread = multiprocessing.Process(target=bot_client.start_bot)
-        self.thread.start()
-
-    async def asyncTearDown(self) -> None:
-        self.thread.terminate()
-
-    async def test_ping(self):
-        bot_client.wait_for_bot()
-
-        result = await bot_client.on_message(Message("$ping"))
-        self.assertIsNotNone(result)
-        self.assertEqual("Pong!", result.get_content())
+@pytest.mark.asyncio
+async def test_ping(bot):
+    await dpytest.message("$ping")
+    assert dpytest.verify().message().content("Pong!")
