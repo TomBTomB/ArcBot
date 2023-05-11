@@ -1,13 +1,22 @@
-from components.arcbot.command.core import Command
+class ParsedCommand:
+    def __init__(self, name: str, args: str | None):
+        self.__name = name
+        self.__args = args
+
+    def get_name(self) -> str:
+        return self.__name
+
+    def get_args(self) -> str | None:
+        return self.__args
 
 
-def parse(prefix: str, message: str) -> Command | None:
-    """Parse a message into a command.
+def parse(prefix: str, message: str) -> ParsedCommand | None:
+    '''Parse a message into a command.
             :param prefix: the command prefix, limited to one character
             :param message: the full message to parse
             :return: the parsed command, or None if the message is not a valid command
             :raises ValueError: if the prefix is not one character long
-            """
+            '''
     if len(prefix.strip()) != 1:
         raise ValueError('prefix must be one character long')
 

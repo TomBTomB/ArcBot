@@ -43,12 +43,12 @@ class MockChannel(Channel):
 
 
 async def send_message(channel: Channel, message: str) -> Message:
-    """Send a message to a channel.
+    '''Send a message to a channel.
     :param channel: the channel to send the message to
     :param message: the message to send
     :raises ValueError: if the message is empty or None
-    """
+    '''
     message_stripped = message.strip()
     if len(message_stripped) == 0:
-        raise ValueError("Message cannot be empty")
+        raise ValueError('Message cannot be empty')
     return await channel.send(message_stripped)

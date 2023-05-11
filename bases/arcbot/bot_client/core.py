@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 from components.arcbot.bot_action.core import send_message, Message
 from components.arcbot.command.core import *
 from components.arcbot.command_parser.core import parse
+from components.arcbot.log.core import get_logger
+
+logger = get_logger('arcBot-logger')
 
 load_dotenv()
 
@@ -75,13 +78,13 @@ async def on_message(message) -> Message | None:
     command = parse(PREFIX, message.content)
     if command is None:
         return
+    logger.info(f'Command received: ' + command.get_name() + ' ' + str(command.get_args()))
 
-    match (command.get_name()):
-        case 'help':
-            response = help_command(command.get_args())
-            return await send_message(message.channel, response)
-        case 'ping':
-            response = ping(command.get_args())
+    response, response_type = run(command.get_name(), command.get_args())
+
+    match response_type:
+        case 'MessageResponse':
+            logger.info(f'Sending response: {response}')
             return await send_message(message.channel, response)
 
     # for channel in message.guild.channels:
@@ -94,7 +97,7 @@ async def on_message(message) -> Message | None:
             await channel.connect()
             await message.channel.send('Bot joined')
         else:
-            await message.channel.send("You must be in a voice channel first so I can join it.")
+            await message.channel.send('You must be in a voice channel first so I can join it.')
 
     elif message.content.startswith(f'{PREFIX}leave'):
         if message.guild.voice_client:
