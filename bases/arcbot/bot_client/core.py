@@ -37,7 +37,7 @@ def wait_for_bot():
 
 @client.event
 async def on_ready():
-    print(f'We have logged in as {client.user}')
+    logger.info(f'We have logged in as {client.user}')
 
 
 @client.event
@@ -86,6 +86,8 @@ async def on_message(message) -> Message | None:
         case 'MessageResponse':
             logger.info(f'Sending response: {response}')
             return await send_message(message.channel, response)
+        case _:
+            logger.error(f'Unimplemented command {command.get_name()}')
 
     # for channel in message.guild.channels:
     #     if channel.name == HISTORY_CHANNEL:

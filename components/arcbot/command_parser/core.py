@@ -27,11 +27,11 @@ def parse(prefix: str, message: str) -> ParsedCommand | None:
 
     message_no_prefix = message_stripped[len(prefix):]
     if ' ' not in message_no_prefix:
-        return Command(message_no_prefix, None)
+        return ParsedCommand(message_no_prefix, None)
 
     name = message_no_prefix[:message_no_prefix.find(' ')]
     if name == '':
         return None
 
     args = message_no_prefix[message_no_prefix.find(' ') + 1:]
-    return Command(name, args)
+    return ParsedCommand(name, args)
