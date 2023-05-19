@@ -6,6 +6,11 @@ authors = ["TomasBruno1 <tomas.bruno@ing.austral.edu.ar>, tomasberretta <tomas.b
 readme = "README.md"
 packages = [
     { include = "arcbot/bot_client", from = "bases" },
+    { include = "arcbot/command_parser", from = "components" },
+    { include = "arcbot/bot_action", from = "components" },
+    { include = "arcbot/audio_fetcher", from = "components" },
+    { include = "arcbot/log", from = "components" },
+    { include = "arcbot/command", from = "components" },
 ]
 
 [tool.poetry.dependencies]

@@ -32,9 +32,17 @@ jobs:
           path: .venv
           key: pydeps-${{ hashFiles('**/poetry.lock') }}
 
+      - run: poetry config virtualenvs.create false
+
       - run: poetry install --no-interaction --no-root
         if: steps.cache-deps.outputs.cache-hit != 'true'
 
       - run: poetry install --no-interaction
+
+      - run: poetry self add poetry-multiproject-plugin
+
+      - run: poetry build-project --no-interaction
+
+      - run: pip install dist/*.whl
 
       - run: poetry run python -m pytest
