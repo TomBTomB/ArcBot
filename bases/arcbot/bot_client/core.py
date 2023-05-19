@@ -1,12 +1,11 @@
 import os
 
 import discord
+from arcbot.bot_action.core import send_message, Message, join_or_leave, DiscordChannel, DiscordVoiceClient
+from arcbot.command.core import *
+from arcbot.command_parser.core import parse
+from arcbot.log.core import get_logger
 from dotenv import load_dotenv
-
-from components.arcbot.bot_action.core import send_message, Message, join_or_leave, DiscordChannel, DiscordVoiceClient
-from components.arcbot.command.core import *
-from components.arcbot.command_parser.core import parse
-from components.arcbot.log.core import get_logger
 
 load_dotenv()
 

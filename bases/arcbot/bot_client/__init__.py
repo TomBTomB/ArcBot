@@ -1,3 +1,3 @@
-from bases.arcbot.bot_client import core
+from arcbot.bot_client.core import start_bot
 
-__all__ = ['core']
+__all__ = ['start_bot']

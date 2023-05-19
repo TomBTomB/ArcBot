@@ -1,6 +1,6 @@
 import unittest
 
-from components.arcbot.command_parser import core as command_parser
+from arcbot.command_parser import core as command_parser
 
 
 class TestCommandParser(unittest.TestCase):

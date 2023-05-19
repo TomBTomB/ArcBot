@@ -1,0 +1,5 @@
+version: "3.9"
+services:
+  bot:
+    env_file: .env
+    image: "arcbot:latest"

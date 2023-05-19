@@ -1,7 +1,7 @@
 import unittest
 
-from components.arcbot.bot_action import core as bot_action
-from components.arcbot.bot_action.core import MockChannel
+from arcbot.bot_action import core as bot_action
+from arcbot.bot_action.core import MockChannel
 
 
 class TestBotAction(unittest.IsolatedAsyncioTestCase):

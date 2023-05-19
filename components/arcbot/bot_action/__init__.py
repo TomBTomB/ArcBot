@@ -1,3 +1,3 @@
-from components.arcbot.bot_action import core
+from arcbot.bot_action import core
 
 __all__ = ['core']

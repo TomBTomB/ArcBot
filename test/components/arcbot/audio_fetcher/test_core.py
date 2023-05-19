@@ -1,4 +1,4 @@
-from components.arcbot.audio_fetcher import core
+from arcbot.audio_fetcher import core
 
 
 def test_sample():

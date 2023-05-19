@@ -1,3 +1,3 @@
-from components.arcbot.log import core
+from arcbot.log import core
 
 __all__ = ['core']
