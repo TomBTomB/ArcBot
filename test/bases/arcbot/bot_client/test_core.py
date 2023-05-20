@@ -3,7 +3,7 @@ import pytest
 import pytest_asyncio
 
 from arcbot.bot_client import core as bot_client
-from arcbot.command import commands
+from arcbot.command.core import commands
 
 
 @pytest_asyncio.fixture
