@@ -1,3 +1,3 @@
-from arcbot.bot_client import start_bot
+from development.bases.bot_client.core import start_bot
 
 start_bot()

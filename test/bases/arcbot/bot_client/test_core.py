@@ -3,6 +3,7 @@ import pytest
 import pytest_asyncio
 
 from arcbot.bot_client import core as bot_client
+from arcbot.command import commands
 
 
 @pytest_asyncio.fixture
@@ -24,4 +25,4 @@ async def test_help(bot):
     await dpytest.message('$help')
     content = dpytest.get_message().content
     lines = content.split('\n')
-    assert len(lines) >= 1
+    assert len(lines) == len(commands)
