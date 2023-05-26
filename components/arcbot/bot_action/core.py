@@ -68,8 +68,15 @@ class VoiceClient:
     def get_channel(self) -> Channel:
         pass
 
+    def play(self, url: str) -> None:
+        pass
+
 
 class DiscordVoiceClient(VoiceClient):
+    ffmpeg_options = {
+        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+        'options': '-vn'
+    }
 
     def __init__(self, discord_voice_client: discord.VoiceClient):
         self.__discord_voice_client = discord_voice_client
@@ -80,6 +87,10 @@ class DiscordVoiceClient(VoiceClient):
     def get_channel(self) -> Channel:
         return DiscordChannel(self.__discord_voice_client.channel)
 
+    def play(self, url: str):
+        audio_source = discord.FFmpegPCMAudio(url, **self.ffmpeg_options)
+        self.__discord_voice_client.play(audio_source)
+
 
 class MockVoiceClient(VoiceClient):
 
@@ -89,13 +100,16 @@ class MockVoiceClient(VoiceClient):
     def get_channel(self) -> Channel:
         return MockChannel()
 
+    def play(self, _) -> None:
+        pass
+
 
 async def send_message(channel: Channel, message: str) -> Message:
-    '''Send a message to a channel.
+    """Send a message to a channel.
     :param channel: the channel to send the message to
     :param message: the message to send
     :raises ValueError: if the message is empty or None
-    '''
+    """
     message_stripped = message.strip()
     if len(message_stripped) == 0:
         raise ValueError('Message cannot be empty')
@@ -106,7 +120,7 @@ async def join_or_leave(channel: Channel, voice_client: VoiceClient, should_join
     if not channel:
         return 'It seems your are in the void.'
 
-    if not voice_client:
+    if voice_client is None:
         if should_join:
             await channel.connect()
             return 'Who disturbs my slumber?'
@@ -126,3 +140,8 @@ async def join_or_leave(channel: Channel, voice_client: VoiceClient, should_join
             return 'Whomst has summoned the almighty one?'
         else:
             return 'I am not amongst you.'
+
+
+def play_audio_file(file_name: str, url: str, voice_client: VoiceClient) -> str:
+    voice_client.play(url)
+    return f'Now playing: {file_name}'

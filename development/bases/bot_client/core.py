@@ -1,12 +1,14 @@
 import os
 
 import discord
+from dotenv import load_dotenv
+
+from development.components.audio_fetcher.core import fetch_audio_file
 from development.components.bot_action.core import Message, DiscordChannel, DiscordVoiceClient, join_or_leave, \
-    send_message
+    send_message, play_audio_file
 from development.components.command.core import *
 from development.components.command_parser.core import parse
 from development.components.log.core import get_logger
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -18,7 +20,7 @@ def setup_client():
     intents = discord.Intents.default()
     intents.message_content = True
     intents.members = True
-    return discord.AutoShardedClient(intents=intents, shard_count=1, shard_ids=[0])
+    return discord.AutoShardedClient(intents=intents)
 
 
 def start_bot():
@@ -92,25 +94,42 @@ async def on_message(message) -> Message | None:
         case 'Join/Leave':
             logger.info(f'Executing join/leave action: {response}')
 
-            voice_channel = None if message.author.voice is None \
-                else DiscordChannel(message.author.voice.channel)
-            voice_client = None if message.guild.voice_client is None \
-                else DiscordVoiceClient(message.guild.voice_client)
+            voice_channel, voice_client = get_voice_channel_and_client(message)
 
             reply = await join_or_leave(voice_channel, voice_client, should_join=response)
 
             logger.info(f'Sending response: {reply}')
             return await send_message(DiscordChannel(message.channel), reply)
         case 'Voice':
-            logger.info(f'Sending voice response: {response}')
+            if not discord.opus.is_loaded():
+                discord.opus.load_opus(os.getenv('OPUS_LIB'))
 
-            if message.author.voice:
-                channel = message.author.voice.channel
-                # await join_channel(channel)
-                # filename = fetch_audio_file(response)
-                # await play_audio_file(filename)
-                return await send_message(message.channel, 'Playing audio')
-            else:
-                return await send_message(message.channel, 'You must be in a voice channel first so I can join it.')
+            logger.info(f'Executing voice action: {response}')
+
+            voice_channel, voice_client = get_voice_channel_and_client(message)
+
+            join_reply = await join_or_leave(voice_channel, voice_client, should_join=True)
+            logger.info(f'Join/Leave result: {join_reply}')
+
+            # Refresh voice client in case we just joined a channel
+            _, voice_client = get_voice_channel_and_client(message)
+            if voice_client is None:
+                logger.info(f'Sending response: {join_reply}')
+                return await send_message(DiscordChannel(message.channel), join_reply)
+
+            file_name, url = await fetch_audio_file(response)
+            logger.info(f'Fetched audio file: {file_name}')
+
+            reply = play_audio_file(file_name, url, voice_client)
+            logger.info(f'Sending response: {reply}')
+            return await send_message(DiscordChannel(message.channel), reply)
         case _:
             logger.error(f'Unimplemented command {command.get_name()}')
+
+
+def get_voice_channel_and_client(message):
+    voice_channel = None if message.author.voice is None \
+        else DiscordChannel(message.author.voice.channel)
+    voice_client = None if message.guild.voice_client is None \
+        else DiscordVoiceClient(message.guild.voice_client)
+    return voice_channel, voice_client
