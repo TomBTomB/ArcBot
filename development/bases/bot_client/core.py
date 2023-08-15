@@ -101,7 +101,7 @@ async def on_message(message) -> Message | None:
             logger.info(f'Sending response: {reply}')
             return await send_message(DiscordChannel(message.channel), reply)
         case 'Voice':
-            if not discord.opus.is_loaded():
+            if os.name is not 'nt' and not discord.opus.is_loaded():
                 discord.opus.load_opus(os.getenv('OPUS_LIB'))
 
             logger.info(f'Executing voice action: {response}')
