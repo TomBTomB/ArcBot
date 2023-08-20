@@ -13,6 +13,8 @@ docker compose up -d
 ```bash
 cd projects/bot
 
+eval $(minikube docker-env)
+
 minikube start
 
 kubectl create secret generic arcbot-secret --from-env-file=.env
