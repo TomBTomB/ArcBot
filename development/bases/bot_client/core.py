@@ -5,10 +5,11 @@ from dotenv import load_dotenv
 
 from development.components.audio_fetcher.core import fetch_audio_file
 from development.components.bot_action.core import Message, DiscordChannel, DiscordVoiceClient, join_or_leave, \
-    send_message, play_audio_file
+    send_message, play_audio_file, song_added_to_queue_message, play_next_song
 from development.components.command.core import *
 from development.components.command_parser.core import parse
 from development.components.log.core import get_logger
+from development.components.queue_manager.core import add_song
 
 load_dotenv()
 
@@ -87,10 +88,11 @@ async def on_message(message) -> Message | None:
 
     response, response_type = run(command.get_name(), command.get_args())
 
+    channel = DiscordChannel(message.channel)
     match response_type:
         case 'Message':
             logger.info(f'Sending response: {response}')
-            return await send_message(DiscordChannel(message.channel), response)
+            return await send_message(channel, response)
         case 'Join/Leave':
             logger.info(f'Executing join/leave action: {response}')
 
@@ -99,9 +101,9 @@ async def on_message(message) -> Message | None:
             reply = await join_or_leave(voice_channel, voice_client, should_join=response)
 
             logger.info(f'Sending response: {reply}')
-            return await send_message(DiscordChannel(message.channel), reply)
+            return await send_message(channel, reply)
         case 'Voice':
-            if os.name is not 'nt' and not discord.opus.is_loaded():
+            if os.name != 'nt' and not discord.opus.is_loaded():
                 discord.opus.load_opus(os.getenv('OPUS_LIB'))
 
             logger.info(f'Executing voice action: {response}')
@@ -115,14 +117,19 @@ async def on_message(message) -> Message | None:
             _, voice_client = get_voice_channel_and_client(message)
             if voice_client is None:
                 logger.info(f'Sending response: {join_reply}')
-                return await send_message(DiscordChannel(message.channel), join_reply)
+                return await send_message(channel, join_reply)
 
             file_name, url = await fetch_audio_file(response)
             logger.info(f'Fetched audio file: {file_name}')
 
-            reply = play_audio_file(file_name, url, voice_client)
+            if voice_client.is_playing():
+                add_song(message.guild.id, file_name, url)
+                return await send_message(channel, song_added_to_queue_message(file_name))
+
+            reply = play_audio_file(file_name, url, voice_client,
+                                    lambda: play_next_song(channel, voice_client, message.guild.id, client.loop))
             logger.info(f'Sending response: {reply}')
-            return await send_message(DiscordChannel(message.channel), reply)
+            return await send_message(channel, reply)
         case _:
             logger.error(f'Unimplemented command {command.get_name()}')
 

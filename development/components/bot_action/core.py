@@ -1,4 +1,8 @@
+import asyncio
+
 import discord
+
+from development.components.queue_manager.core import get_next_song
 
 
 class Message:
@@ -68,7 +72,10 @@ class VoiceClient:
     def get_channel(self) -> Channel:
         pass
 
-    def play(self, url: str) -> None:
+    def play(self, url: str, after: asyncio.AbstractEventLoop) -> None:
+        pass
+
+    def is_playing(self) -> bool:
         pass
 
 
@@ -87,9 +94,13 @@ class DiscordVoiceClient(VoiceClient):
     def get_channel(self) -> Channel:
         return DiscordChannel(self.__discord_voice_client.channel)
 
-    def play(self, url: str):
+    def play(self, url: str, after: callable):
         audio_source = discord.FFmpegPCMAudio(url, **self.ffmpeg_options)
-        self.__discord_voice_client.play(audio_source)
+        self.__discord_voice_client.play(audio_source,
+                                         after=lambda _: after())
+
+    def is_playing(self) -> bool:
+        return self.__discord_voice_client.is_playing()
 
 
 class MockVoiceClient(VoiceClient):
@@ -100,7 +111,10 @@ class MockVoiceClient(VoiceClient):
     def get_channel(self) -> Channel:
         return MockChannel()
 
-    def play(self, _) -> None:
+    def play(self, *_) -> None:
+        pass
+
+    def is_playing(self) -> bool:
         pass
 
 
@@ -142,6 +156,16 @@ async def join_or_leave(channel: Channel, voice_client: VoiceClient, should_join
             return 'I am not amongst you.'
 
 
-def play_audio_file(file_name: str, url: str, voice_client: VoiceClient) -> str:
-    voice_client.play(url)
+def play_audio_file(file_name: str, url: str, voice_client: VoiceClient, after: callable) -> str:
+    voice_client.play(url, after)
     return f'Now playing: {file_name}'
+
+
+def song_added_to_queue_message(song: str) -> str:
+    return f'Added {song} to queue.'
+
+
+def play_next_song(channel: Channel, voice_client: VoiceClient, guild_id: int, loop: asyncio.AbstractEventLoop):
+    file_name, url = get_next_song(guild_id)
+    message = play_audio_file(file_name, url, voice_client, loop)
+    asyncio.run_coroutine_threadsafe(send_message(channel, message), loop)
