@@ -12,7 +12,8 @@ ytdl_format_options = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0'  # bind to ipv4 since ipv6 addresses cause issues sometimes
+    'source_address': '0.0.0.0',  # bind to ipv4 since ipv6 addresses cause issues sometimes
+    'skip_download': True
 }
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
@@ -20,8 +21,9 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 async def fetch_audio_file(url: str) -> (str, str):
     """
-    Fetches an audio file from a URL and returns the path to the file.
+    Fetches an audio file from a URL or name
     :param url: URL to fetch the audio file from.
+    :returns: (title, url)
     """
     data = ytdl.extract_info(url, download=False)
     if 'entries' in data:

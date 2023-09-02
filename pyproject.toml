@@ -12,6 +12,7 @@ packages = [
     { include = "arcbot/log", from = "components" },
     { include = "arcbot/command", from = "components" },
     {include = "arcbot/queue_manager",from = "components"},
+    {include = "arcbot/strings",from = "components"},
 ]
 
 [tool.poetry.dependencies]

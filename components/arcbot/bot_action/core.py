@@ -4,6 +4,8 @@ import discord
 
 from arcbot.queue_manager.core import get_next_song
 
+from arcbot.strings.core import Strings
+
 
 class Message:
     def get_content(self) -> str:
@@ -132,37 +134,37 @@ async def send_message(channel: Channel, message: str) -> Message:
 
 async def join_or_leave(channel: Channel, voice_client: VoiceClient, should_join: bool):
     if not channel:
-        return 'It seems your are in the void.'
+        return Strings.Action.user_not_connected
 
     if voice_client is None:
         if should_join:
             await channel.connect()
-            return 'Who disturbs my slumber?'
+            return Strings.Action.bot_connected
         else:
-            return 'I am not amongst you.'
+            return Strings.Action.bot_not_connected
 
     if voice_client.get_channel() == channel:
         if should_join:
-            return 'I am already amongst you.'
+            return Strings.Action.bot_already_connected
         else:
             await voice_client.disconnect()
-            return 'I have returned to the void from whence I came.'
+            return Strings.Action.bot_disconnected
     else:
         if should_join:
             await voice_client.disconnect()
             await channel.connect()
-            return 'Whomst has summoned the almighty one?'
+            return Strings.Action.bot_moved
         else:
-            return 'I am not amongst you.'
+            return Strings.Action.bot_not_connected
 
 
 def play_audio_file(file_name: str, url: str, voice_client: VoiceClient, after: callable) -> str:
     voice_client.play(url, after)
-    return f'Now playing: {file_name}'
+    return Strings.Action.now_playing(file_name)
 
 
-def song_added_to_queue_message(song: str) -> str:
-    return f'Added {song} to queue.'
+def song_added_to_queue_message(file_name: str) -> str:
+    return Strings.Action.song_added_to_queue(file_name)
 
 
 def play_next_song(channel: Channel, voice_client: VoiceClient, guild_id: int, loop: asyncio.AbstractEventLoop):

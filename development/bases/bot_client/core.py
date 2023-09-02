@@ -3,13 +3,13 @@ import os
 import discord
 from dotenv import load_dotenv
 
-from development.components.audio_fetcher.core import fetch_audio_file
-from development.components.bot_action.core import Message, DiscordChannel, DiscordVoiceClient, join_or_leave, \
-    send_message, play_audio_file, song_added_to_queue_message, play_next_song
-from development.components.command.core import *
-from development.components.command_parser.core import parse
-from development.components.log.core import get_logger
-from development.components.queue_manager.core import add_song
+from arcbot.audio_fetcher.core import fetch_audio_file
+from arcbot.bot_action.core import *
+from arcbot.command.core import *
+from arcbot.command_parser.core import parse
+from arcbot.log.core import get_logger
+
+from arcbot.queue_manager.core import add_song
 
 load_dotenv()
 
@@ -21,7 +21,9 @@ def setup_client():
     intents = discord.Intents.default()
     intents.message_content = True
     intents.members = True
-    return discord.AutoShardedClient(intents=intents)
+    if os.getenv('SHARDED'):
+        return discord.AutoShardedClient(intents=intents)
+    return discord.Client(intents=intents)
 
 
 def start_bot():

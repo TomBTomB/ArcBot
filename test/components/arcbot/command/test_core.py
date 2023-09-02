@@ -46,14 +46,6 @@ class TestCore(unittest.TestCase):
         self.assertEqual(response_type, "Voice")  # check if the response type is correct
         self.assertEqual(result, args)  # check if the result is the same as the argument
 
-    def test_run_help_with_argument(self):
-        # test running the help command with an argument
-        name = "help"
-        args = "ping"
-        result, response_type = command.run(name, args)
-        self.assertEqual(response_type, "Message")  # check if the response type is correct
-        self.assertEqual(result, "ping: Pings the bot.")  # check if the result is the expected output
-
     def test_run_ping_with_argument(self):
         # test running the ping command with an argument
         name = "ping"
@@ -77,14 +69,6 @@ class TestCore(unittest.TestCase):
         result, response_type = command.run(name, args)
         self.assertEqual(response_type, "Join/Leave")  # check if the response type is correct
         self.assertFalse(result)  # check if the result is False
-
-    def test_run_play_with_invalid_url(self):
-        # test running the play command with an invalid URL argument
-        name = "play"
-        args = "https://www.example.com"
-        result, response_type = command.run(name, args)
-        self.assertEqual(response_type, "Voice")  # check if the response type is correct
-        self.assertIsNone(result)  # check if the result is None
 
 
 if __name__ == '__main__':

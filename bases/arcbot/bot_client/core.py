@@ -21,7 +21,9 @@ def setup_client():
     intents = discord.Intents.default()
     intents.message_content = True
     intents.members = True
-    return discord.AutoShardedClient(intents=intents)
+    if os.getenv('SHARDED'):
+        return discord.AutoShardedClient(intents=intents)
+    return discord.Client(intents=intents)
 
 
 def start_bot():

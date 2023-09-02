@@ -1,3 +1,6 @@
+from arcbot.strings.core import Strings
+
+
 def help_command(_args) -> str:
     return '\n'.join([str(command) for command in commands.values()])
 
@@ -36,15 +39,15 @@ class Command:
 
 
 commands = {
-    'help': Command(name='help', description='Shows every possible command.', function=help_command,
+    'help': Command(name='help', description=Strings.Description.help, function=help_command,
                     response_type='Message'),
-    'ping': Command(name='ping', description="Pings the bot.", function=ping,
+    'ping': Command(name='ping', description=Strings.Description.ping, function=ping,
                     response_type="Message"),
-    'join': Command(name='join', description="Joins the voice channel you are in.", function=join,
+    'join': Command(name='join', description=Strings.Description.join, function=join,
                     response_type="Join/Leave"),
-    'leave': Command(name='leave', description="Leaves the voice channel you are in.", function=leave,
+    'leave': Command(name='leave', description=Strings.Description.leave, function=leave,
                      response_type="Join/Leave"),
-    'play': Command(name='play', description="Plays the requested song. (from an url)", function=play,
+    'play': Command(name='play', description=Strings.Description.play, function=play,
                     response_type="Voice"),
 }
 
