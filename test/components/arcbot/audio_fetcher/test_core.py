@@ -1,5 +1,5 @@
 import unittest
-import youtube_dl
+import yt_dlp as youtube_dl
 from arcbot.audio_fetcher import core as audio_fetcher
 
 
