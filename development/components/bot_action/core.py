@@ -2,9 +2,9 @@ import asyncio
 
 import discord
 
-from arcbot.queue_manager.core import get_next_song
+from development.components.queue_manager.core import get_next_song
 
-from arcbot.strings.core import Strings
+from development.components.strings.core import Strings
 
 
 class Message:
@@ -80,6 +80,18 @@ class VoiceClient:
     def is_playing(self) -> bool:
         pass
 
+    def stop(self):
+        pass
+
+    def pause(self):
+        pass
+
+    def resume(self):
+        pass
+
+    def is_paused(self) -> bool:
+        pass
+
 
 class DiscordVoiceClient(VoiceClient):
     ffmpeg_options = {
@@ -104,6 +116,18 @@ class DiscordVoiceClient(VoiceClient):
     def is_playing(self) -> bool:
         return self.__discord_voice_client.is_playing()
 
+    def pause(self):
+        self.__discord_voice_client.pause()
+
+    def resume(self):
+        self.__discord_voice_client.resume()
+
+    def stop(self):
+        self.__discord_voice_client.stop()
+
+    def is_paused(self) -> bool:
+        return self.__discord_voice_client.is_paused()
+
 
 class MockVoiceClient(VoiceClient):
 
@@ -117,6 +141,9 @@ class MockVoiceClient(VoiceClient):
         pass
 
     def is_playing(self) -> bool:
+        pass
+
+    def stop(self):
         pass
 
 
@@ -169,5 +196,40 @@ def song_added_to_queue_message(file_name: str) -> str:
 
 def play_next_song(channel: Channel, voice_client: VoiceClient, guild_id: int, loop: asyncio.AbstractEventLoop):
     file_name, url = get_next_song(guild_id)
-    message = play_audio_file(file_name, url, voice_client, loop)
+    if file_name is None:
+        asyncio.run_coroutine_threadsafe(leave_channel(voice_client), loop)
+        return
+    message = play_audio_file(file_name, url, voice_client,
+                              lambda: play_next_song(channel, voice_client, guild_id, loop))
     asyncio.run_coroutine_threadsafe(send_message(channel, message), loop)
+
+
+def pause_or_resume(voice_client: VoiceClient):
+    if voice_client.is_playing():
+        voice_client.pause()
+    else:
+        voice_client.resume()
+
+
+def resume_playing(voice_client: VoiceClient):
+    voice_client.resume()
+
+
+async def leave_channel(voice_client: VoiceClient):
+    await voice_client.disconnect()
+
+
+def pause_playing(voice_client: VoiceClient):
+    voice_client.pause()
+
+
+def skip_song(guild_id: int, voice_client: VoiceClient, channel: Channel,
+              loop: asyncio.AbstractEventLoop) -> str | None:
+    pause_playing(voice_client)
+    next_song = get_next_song(guild_id)
+    if next_song[0] is None:
+        return None
+    else:
+        play_audio_file(next_song[0], next_song[1], voice_client,
+                        lambda: play_next_song(channel, voice_client, guild_id, loop))
+        return next_song[0]

@@ -3,13 +3,13 @@ import os
 import discord
 from dotenv import load_dotenv
 
-from arcbot.audio_fetcher.core import fetch_audio_file
-from arcbot.bot_action.core import *
-from arcbot.command.core import *
-from arcbot.command_parser.core import parse
-from arcbot.log.core import get_logger
+from development.components.audio_fetcher.core import fetch_audio_file
+from development.components.bot_action.core import *
+from development.components.command.core import *
+from development.components.command_parser.core import parse
+from development.components.log.core import get_logger
 
-from arcbot.queue_manager.core import add_song
+from development.components.queue_manager.core import add_song, get_queue_song_names, move_song, remove_song
 
 load_dotenv()
 
@@ -104,7 +104,7 @@ async def on_message(message) -> Message | None:
 
             logger.info(f'Sending response: {reply}')
             return await send_message(channel, reply)
-        case 'Voice':
+        case 'Play':
             if os.name != 'nt' and not discord.opus.is_loaded():
                 discord.opus.load_opus(os.getenv('OPUS_LIB'))
 
@@ -124,7 +124,7 @@ async def on_message(message) -> Message | None:
             file_name, url = await fetch_audio_file(response)
             logger.info(f'Fetched audio file: {file_name}')
 
-            if voice_client.is_playing():
+            if voice_client.is_playing() or voice_client.is_paused():
                 add_song(message.guild.id, file_name, url)
                 return await send_message(channel, song_added_to_queue_message(file_name))
 
@@ -132,6 +132,42 @@ async def on_message(message) -> Message | None:
                                     lambda: play_next_song(channel, voice_client, message.guild.id, client.loop))
             logger.info(f'Sending response: {reply}')
             return await send_message(channel, reply)
+        case 'Pause/Resume':
+            logger.info(f'Executing pause/resume action: {response}')
+            _, voice_client = get_voice_channel_and_client(message)
+            if voice_client is None:
+                return await send_message(channel, Strings.Action.bot_not_connected)
+            pause_or_resume(voice_client)
+            return await send_message(channel, response)
+        case 'Queue':
+            logger.info(f'Executing queue action: {response}')
+            songs: list[str] = get_queue_song_names(message.guild.id)
+            if len(songs) == 0:
+                return await send_message(channel, Strings.Queue.empty)
+            return await send_message(channel, '\n'.join([f'{i + 1}. {song}' for i, song in enumerate(songs)]))
+        case 'Skip':
+            logger.info(f'Executing skip action: {response}')
+            _, voice_client = get_voice_channel_and_client(message)
+            if voice_client is None:
+                return await send_message(channel, Strings.Action.bot_not_connected)
+            new_song = skip_song(message.guild.id, voice_client, channel, client.loop)
+            if new_song is None:
+                await leave_channel(voice_client)
+                return await send_message(channel, Strings.Action.bot_disconnected)
+            return await send_message(channel, Strings.Action.now_playing(new_song))
+        case 'Move':
+            logger.info(f'Executing move action: {response}')
+            move_from, move_to = response.split(' ')
+            moved_song = move_song(message.guild.id, int(move_from) - 1, int(move_to) - 1)
+            if moved_song is None:
+                return await send_message(channel, Strings.Error.invalid_move)
+            return await send_message(channel, Strings.Action.song_moved(moved_song, move_to))
+        case 'Remove':
+            logger.info(f'Executing remove action: {response}')
+            removed_song = remove_song(message.guild.id, int(response) - 1)
+            if removed_song is None:
+                return await send_message(channel, Strings.Error.invalid_remove)
+            return await send_message(channel, Strings.Action.song_removed(removed_song))
         case _:
             logger.error(f'Unimplemented command {command.get_name()}')
 

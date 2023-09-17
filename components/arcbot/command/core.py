@@ -21,6 +21,30 @@ def play(args) -> str:
     return args
 
 
+def pause(_args) -> str:
+    return 'Paused song.'
+
+
+def resume(_args) -> str:
+    return 'Resuming...'
+
+
+def skip(_args) -> str:
+    return 'Skipped song.'
+
+
+def queue(_args) -> None:
+    return None
+
+
+def move(args) -> str:
+    return args
+
+
+def remove(args) -> str:
+    return args
+
+
 class Command:
     def __init__(self, name: str, description: str, function: callable, response_type: str):
         self.__name = name
@@ -48,7 +72,21 @@ commands = {
     'leave': Command(name='leave', description=Strings.Description.leave, function=leave,
                      response_type="Join/Leave"),
     'play': Command(name='play', description=Strings.Description.play, function=play,
-                    response_type="Voice"),
+                    response_type="Play"),
+    'pause': Command(name='pause', description=Strings.Description.pause, function=pause,
+                     response_type="Pause/Resume"),
+    'resume': Command(name='resume', description=Strings.Description.resume, function=resume,
+                      response_type="Pause/Resume"),
+    'stop': Command(name='stop', description=Strings.Description.stop, function=leave,
+                    response_type="Join/Leave"),
+    'skip': Command(name='skip', description=Strings.Description.skip, function=skip,
+                    response_type="Skip"),
+    'queue': Command(name='queue', description=Strings.Description.queue, function=queue,
+                     response_type="Queue"),
+    'move': Command(name='move', description=Strings.Description.move, function=move,
+                    response_type="Move"),
+    'remove': Command(name='remove', description=Strings.Description.remove, function=remove,
+                      response_type="Remove")
 }
 
 

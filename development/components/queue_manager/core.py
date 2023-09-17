@@ -8,23 +8,25 @@ def add_song(guild_id: int, file_name: str, url: str):
 
 
 def get_next_song(guild_id: int) -> (str, str):
-    if guild_id not in queue:
+    if guild_id not in queue or len(queue[guild_id]) == 0:
         return None, None
     return queue[guild_id].pop(0)
 
 
-def remove_song(guild_id: int, song: str):
+def remove_song(guild_id: int, index: int) -> str | None:
     if guild_id not in queue:
-        return
-    queue[guild_id].remove(song)
+        return None
+    return queue[guild_id].pop(index)[0]
 
 
-def move_song(guild_id: int, index_from: int, index_to: int):
+def move_song(guild_id: int, index_from: int, index_to: int) -> str | None:
     if guild_id not in queue:
-        return
+        return None
     if index_from < 0 or index_from >= len(queue[guild_id]) or index_to < 0 or index_to >= len(queue[guild_id]):
-        return
-    queue[guild_id].insert(index_to, queue[guild_id].pop(index_from))
+        return None
+    moved_song = queue[guild_id].pop(index_from)
+    queue[guild_id].insert(index_to, moved_song)
+    return moved_song[0]
 
 
 def clear_queue(guild_id: int):

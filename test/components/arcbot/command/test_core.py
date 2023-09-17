@@ -43,7 +43,7 @@ class TestCore(unittest.TestCase):
         name = "play"
         args = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         result, response_type = command.run(name, args)
-        self.assertEqual(response_type, "Voice")  # check if the response type is correct
+        self.assertEqual(response_type, "Play")  # check if the response type is correct
         self.assertEqual(result, args)  # check if the result is the same as the argument
 
     def test_run_ping_with_argument(self):
