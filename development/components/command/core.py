@@ -1,3 +1,5 @@
+from typing import Tuple, Any
+
 from development.components.strings.core import Strings
 
 
@@ -45,6 +47,15 @@ def remove(args) -> str:
     return args
 
 
+def create_playlist(args) -> str:
+    return args
+
+
+def add_song_to_playlist(args) -> (str, str):
+    playlist_name, song_name = args.split(' ', 1)
+    return playlist_name, song_name
+
+
 class Command:
     def __init__(self, name: str, description: str, function: callable, response_type: str):
         self.__name = name
@@ -86,7 +97,11 @@ commands = {
     'move': Command(name='move', description=Strings.Description.move, function=move,
                     response_type="Move"),
     'remove': Command(name='remove', description=Strings.Description.remove, function=remove,
-                      response_type="Remove")
+                      response_type="Remove"),
+    'create-playlist': Command(name='create-playlist', description=Strings.Description.create_playlist,
+                               function=create_playlist, response_type="CreatePlaylist"),
+    'add-song-to-playlist': Command(name='add-song-to-playlist', description=Strings.Description.add_song_to_playlist,
+                                    function=add_song_to_playlist, response_type="AddSongPlaylist"),
 }
 
 

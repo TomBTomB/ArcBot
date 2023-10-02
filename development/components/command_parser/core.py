@@ -11,12 +11,12 @@ class ParsedCommand:
 
 
 def parse(prefix: str, message: str) -> ParsedCommand | None:
-    '''Parse a message into a command.
+    """Parse a message into a command.
             :param prefix: the command prefix, limited to one character
             :param message: the full message to parse
             :return: the parsed command, or None if the message is not a valid command
             :raises ValueError: if the prefix is not one character long
-            '''
+            """
     if len(prefix.strip()) != 1:
         raise ValueError('prefix must be one character long')
 

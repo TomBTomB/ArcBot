@@ -19,6 +19,13 @@ class Strings:
         @staticmethod
         def song_removed(removed_song): return f'Removed `{removed_song}` from queue.'
 
+        @staticmethod
+        def playlist_created(response): return f'Created playlist `{response}`.'
+
+        @staticmethod
+        def song_added_to_playlist(file_name,
+                                   playlist_name): return f'Added `{file_name}` to playlist `{playlist_name}`.'
+
     class Description:
         help = 'Shows every possible command.'
         ping = 'Pings the bot.'
@@ -32,6 +39,8 @@ class Strings:
         queue = 'Shows the current queue.'
         move = 'Moves a song to a different position in the queue.'
         remove = 'Removes a song from the queue.'
+        create_playlist = 'Creates a playlist with the given name.'
+        add_song_to_playlist = 'Adds a song to a playlist. Usage: `add_song_to_playlist <playlist_name> <song>`'
 
     class Queue:
         empty = 'The Queue is empty.'

@@ -10,6 +10,7 @@ from development.components.command_parser.core import parse
 from development.components.log.core import get_logger
 
 from development.components.queue_manager.core import add_song, get_queue_song_names, move_song, remove_song
+from development.components.repository import core as repository
 
 load_dotenv()
 
@@ -121,7 +122,7 @@ async def on_message(message) -> Message | None:
                 logger.info(f'Sending response: {join_reply}')
                 return await send_message(channel, join_reply)
 
-            file_name, url = await fetch_audio_file(response)
+            file_name, url, _ = await fetch_audio_file(response)
             logger.info(f'Fetched audio file: {file_name}')
 
             if voice_client.is_playing() or voice_client.is_paused():
@@ -168,6 +169,20 @@ async def on_message(message) -> Message | None:
             if removed_song is None:
                 return await send_message(channel, Strings.Error.invalid_remove)
             return await send_message(channel, Strings.Action.song_removed(removed_song))
+        case 'CreatePlaylist':
+            logger.info(f'Executing create playlist action: {response}')
+            saved_name = repository.save_playlist(response, str(message.author.id), str(message.guild.id))
+            if saved_name:
+                return await send_message(channel, Strings.Action.playlist_created(saved_name))
+            return await send_message(channel, Strings.Error.generic)
+        case 'AddSongPlaylist':
+            logger.info(f'Executing add song to playlist action: {response}')
+            playlist_name, song_name = response
+            file_name, _, original_url = await fetch_audio_file(song_name)
+            was_added = repository.add_song(str(message.guild.id), playlist_name, original_url)
+            if was_added:
+                return await send_message(channel, Strings.Action.song_added_to_playlist(file_name, playlist_name))
+            return await send_message(channel, Strings.Error.generic)
         case _:
             logger.error(f'Unimplemented command {command.get_name()}')
 

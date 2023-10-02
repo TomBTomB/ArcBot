@@ -29,4 +29,4 @@ async def fetch_audio_file(url: str) -> (str, str):
     if 'entries' in data:
         # take first item from a playlist
         data = data['entries'][0]
-    return data['title'], data['url']
+    return data['title'], data['url'], data['original_url']
