@@ -13,9 +13,37 @@ def save_playlist(name: str, user_id: str, guild_id: str) -> str | None:
 
 
 @db_session
-def add_song(guild_id: str, playlist_name: str, song_url: str) -> bool:
+def add_song(guild_id: str, playlist_name: str, song_url: str, song_name: str, requesting_user_id: str) -> bool:
     playlist = Playlist.get(lambda p: p.name == playlist_name and p.guild_id == guild_id)
-    if playlist is None or song_url in playlist.songs:
+    if playlist is None or song_url in playlist.songs or playlist.user_id != requesting_user_id:
         return False
-    playlist.songs.append(song_url)
+    playlist.songs.append(song_url + ' ' + song_name)
     return True
+
+
+@db_session
+def delete_playlist(guild_id: str, playlist_name: str, requesting_user_id: str) -> str | None:
+    playlist = Playlist.get(lambda p: p.name == playlist_name and p.guild_id == guild_id)
+    if playlist is None or playlist.user_id != requesting_user_id:
+        return None
+    playlist.delete()
+    return playlist_name
+
+
+@db_session
+def remove_song(guild_id: str, playlist_name: str, song_url: str, song_name: str, requesting_user_id: str) -> bool:
+    playlist = Playlist.get(lambda p: p.name == playlist_name and p.guild_id == guild_id)
+    if playlist is None or song_url + ' ' + song_name not in playlist.songs or playlist.user_id != requesting_user_id:
+        return False
+    playlist.songs.remove(song_url + ' ' + song_name)
+    return True
+
+
+@db_session
+def get_playlist_by_name(guild_id: str, playlist_name: str) -> Playlist | None:
+    return Playlist.get(lambda p: p.name == playlist_name and p.guild_id == guild_id)
+
+
+@db_session
+def get_playlists(guild_id: str) -> list[Playlist]:
+    return list(Playlist.select(lambda p: p.guild_id == guild_id))

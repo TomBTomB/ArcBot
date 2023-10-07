@@ -1,5 +1,9 @@
 import yt_dlp as youtube_dl
 
+from development.components.log.core import get_logger
+
+logger = get_logger('arcBot-logger')
+
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 ytdl_format_options = {
@@ -29,4 +33,5 @@ async def fetch_audio_file(url: str) -> (str, str):
     if 'entries' in data:
         # take first item from a playlist
         data = data['entries'][0]
+    logger.info(f'Fetched audio file: {data["title"]}, {data["url"]}, {data["original_url"]}')
     return data['title'], data['url'], data['original_url']

@@ -2,9 +2,12 @@ import asyncio
 
 import discord
 
+from development.components.log.core import get_logger
 from development.components.queue_manager.core import get_next_song
 
 from development.components.strings.core import Strings
+
+logger = get_logger('arcBot-logger')
 
 
 class Message:
@@ -156,6 +159,7 @@ async def send_message(channel: Channel, message: str) -> Message:
     message_stripped = message.strip()
     if len(message_stripped) == 0:
         raise ValueError('Message cannot be empty')
+    logger.info(f'Sending message: {message_stripped}')
     return await channel.send(message_stripped)
 
 

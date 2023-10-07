@@ -24,5 +24,5 @@ class Playlist(db.Entity):
 
 
 db.generate_mapping(create_tables=True)
-db.drop_all_tables(with_all_data=True)
-db.create_tables()
+# db.drop_all_tables(with_all_data=True)
+# db.create_tables()

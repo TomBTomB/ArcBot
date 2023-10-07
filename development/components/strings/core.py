@@ -6,6 +6,9 @@ class Strings:
         bot_connected = 'Who disturbs my slumber?'
         bot_disconnected = 'I have returned to the void from whence I came.'
         bot_moved = 'Whomst has summoned the almighty one?'
+        pause = 'Someone stopped the party.'
+        resume = 'The party goes on.'
+        skipped = "Hey! I was listening to that..."
 
         @staticmethod
         def now_playing(file_name): return f'Now playing: `{file_name}`'
@@ -26,6 +29,13 @@ class Strings:
         def song_added_to_playlist(file_name,
                                    playlist_name): return f'Added `{file_name}` to playlist `{playlist_name}`.'
 
+        @staticmethod
+        def playlist_deleted(playlist_name): return f'Deleted playlist `{playlist_name}`.'
+
+        @staticmethod
+        def song_removed_from_playlist(file_name,
+                                       playlist_name): return f'Removed `{file_name}` from playlist `{playlist_name}`.'
+
     class Description:
         help = 'Shows every possible command.'
         ping = 'Pings the bot.'
@@ -39,8 +49,13 @@ class Strings:
         queue = 'Shows the current queue.'
         move = 'Moves a song to a different position in the queue.'
         remove = 'Removes a song from the queue.'
-        create_playlist = 'Creates a playlist with the given name.'
-        add_song_to_playlist = 'Adds a song to a playlist. Usage: `add_song_to_playlist <playlist_name> <song>`'
+        playlist = 'Lists all available playlist for the guild.'
+        playlist_create = 'Creates a playlist with the given name.'
+        playlist_add = 'Adds a song to a playlist. Usage: `playlist-add <playlist_name> <song>`'
+        playlist_delete = 'Deletes a playlist with the given name.'
+        playlist_remove = 'Removes a song from a playlist. Usage: `playlist-remove <playlist_name> <song>`'
+        playlist_play = 'Plays a playlist with the given name.'
+        playlist_info = 'Lists the songs in the playlist with the given name. Usage: `playlist-info <playlist_name>`'
 
     class Queue:
         empty = 'The Queue is empty.'
@@ -49,3 +64,4 @@ class Strings:
         generic = 'Something went wrong.'
         invalid_move = 'Invalid move operation.'
         invalid_remove = 'Invalid remove operation.'
+        no_playlists = 'There are no playlists, to create one run the command `playlist-create`.'
