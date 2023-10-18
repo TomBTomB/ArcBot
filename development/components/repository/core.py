@@ -1,6 +1,6 @@
 from pony.orm import *
 
-from development.components.entity.core import Playlist
+from development.components.entity.core import Playlist, Poll
 
 
 @db_session
@@ -47,3 +47,20 @@ def get_playlist_by_name(guild_id: str, playlist_name: str) -> Playlist | None:
 @db_session
 def get_playlists(guild_id: str) -> list[Playlist]:
     return list(Playlist.select(lambda p: p.guild_id == guild_id))
+
+
+@db_session
+def save_poll(guild_id: str, message_id: str, channel_id: str):
+    if Poll.exists(lambda p: p.guild_id == guild_id):
+        return
+    Poll(guild_id=guild_id, message_id=message_id, channel_id=channel_id)
+
+
+@db_session
+def get_polls():
+    return list(Poll.select())
+
+
+@db_session
+def delete_poll(poll_id):
+    Poll[poll_id].delete()

@@ -29,6 +29,7 @@ async def fetch_audio_file(url: str) -> (str, str):
     :param url: URL to fetch the audio file from.
     :returns: (title, url)
     """
+    logger.info(f'Fetching audio file: {url}')
     data = ytdl.extract_info(url, download=False)
     if 'entries' in data:
         # take first item from a playlist

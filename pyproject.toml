@@ -26,6 +26,7 @@ dpytest = "^0.6.5"
 yt-dlp = "2023.7.6"
 pony = "^0.7.17"
 psycopg2-binary = "^2.9.8"
+schedule = "^1.2.1"
 
 
 [build-system]

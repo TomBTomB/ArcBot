@@ -1,5 +1,10 @@
+import datetime
+import multiprocessing
 import os
+from multiprocessing import freeze_support
+
 import discord
+from discord.ext import tasks
 from dotenv import load_dotenv
 
 from development.components.audio_fetcher.core import fetch_audio_file
@@ -7,6 +12,7 @@ from development.components.bot_action.core import *
 from development.components.command.core import *
 from development.components.command_parser.core import parse
 from development.components.log.core import get_logger
+from development.components.poll_manager.core import *
 
 from development.components.queue_manager.core import add_song, get_queue_song_names, move_song, remove_song
 from development.components.repository import core as repository
@@ -21,6 +27,7 @@ def setup_client():
     intents = discord.Intents.default()
     intents.message_content = True
     intents.members = True
+    intents.guilds = True
     if os.getenv('SHARDED'):
         return discord.AutoShardedClient(intents=intents)
     return discord.Client(intents=intents)
@@ -45,6 +52,7 @@ logger = get_logger('arcBot-logger')
 
 @client.event
 async def on_ready():
+    poll.start()
     logger.info(f'We have logged in as {client.user}')
 
 
@@ -83,6 +91,18 @@ class DotDict(dict):
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+
+
+@tasks.loop(time=datetime.time(hour=19, minute=53))
+async def poll():
+    await notify_poll_winners(client)
+    await send_poll_messages(client)
+
+
+# @tasks.loop(time=datetime.time(hour=19, minute=53))
+# async def poll_win():
+#     await notify_poll_winners(client)
+#     # await send_poll_messages(client)
 
 
 @client.event

@@ -147,7 +147,7 @@ async def playlist_remove(args, context) -> Message:
 
 async def playlist_play(args, context) -> Message:
     playlist = repository.get_playlist_by_name(str(context.message.guild.id), args)
-    if playlist is None:
+    if playlist is None or len(playlist.songs) == 0:
         return await send_message(context.channel, Strings.Error.generic)
     song_to_play = playlist.songs[0].split(' ', 1)[0]
     response = await play(song_to_play, context)

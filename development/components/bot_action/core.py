@@ -14,6 +14,12 @@ class Message:
     def get_content(self) -> str:
         pass
 
+    def get_id(self) -> int:
+        pass
+
+    async def add_reaction(self, reaction):
+        pass
+
 
 class DiscordMessage(Message):
     def __init__(self, discord_message: discord.Message):
@@ -22,6 +28,12 @@ class DiscordMessage(Message):
     def get_content(self) -> str:
         return self.__discord_message.content
 
+    def get_id(self) -> int:
+        return self.__discord_message.id
+
+    async def add_reaction(self, reaction):
+        await self.__discord_message.add_reaction(reaction)
+
 
 class MockMessage(Message):
     def __init__(self, content: str):
@@ -29,6 +41,12 @@ class MockMessage(Message):
 
     def get_content(self) -> str:
         return self.__content
+
+    def get_id(self) -> int:
+        return 0
+
+    async def add_reaction(self, reaction):
+        pass
 
 
 class Channel:
@@ -160,7 +178,7 @@ async def send_message(channel: Channel, message: str) -> Message:
     if len(message_stripped) == 0:
         raise ValueError('Message cannot be empty')
     logger.info(f'Sending message: {message_stripped}')
-    return await channel.send(message_stripped)
+    return DiscordMessage(await channel.send(message_stripped))
 
 
 async def join_or_leave(channel: Channel, voice_client: VoiceClient, should_join: bool):
@@ -237,3 +255,8 @@ def skip_song(guild_id: int, voice_client: VoiceClient, channel: Channel,
         play_audio_file(next_song[0], next_song[1], voice_client,
                         lambda: play_next_song(channel, voice_client, guild_id, loop))
         return next_song[0]
+
+
+async def add_reactions(message: Message, reactions):
+    for reaction in reactions:
+        await message.add_reaction(reaction)

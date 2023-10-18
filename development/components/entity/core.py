@@ -23,6 +23,12 @@ class Playlist(db.Entity):
     composite_key(guild_id, name)
 
 
+class Poll(db.Entity):
+    guild_id = Required(str)
+    message_id = Required(str)
+    channel_id = Required(str)
+
+
 db.generate_mapping(create_tables=True)
 # db.drop_all_tables(with_all_data=True)
 # db.create_tables()
