@@ -37,6 +37,11 @@ async def notify_poll_winners(client):
         repository.delete_poll(poll.id)
         guild = client.get_guild(int(poll.guild_id))
         channel = guild.get_channel(int(poll.channel_id))
+
+        if poll.winner_name is not None:
+            await play_winner_playlist(poll.winner_name, channel, guild, client)
+            continue
+
         message = await channel.fetch_message(int(poll.message_id))
         vote_count = {}
         for reaction in message.reactions:
@@ -54,11 +59,15 @@ async def notify_poll_winners(client):
                                                    message.content.split('\n')[emojis.index(winner) + 1].split(' ')[1])
         if playlist is None:
             continue
-        await send_message(channel, f'The winner is {playlist.name}!')
-        # loop through voice channels to find someone connected
-        for voice_channel in guild.voice_channels:
-            if len(voice_channel.members) > 0:
-                await playlist_play(playlist.name, DotDict(
-                    {'message': DotDict({'guild': guild,
-                                         'author': DotDict({'voice': DotDict({'channel': voice_channel})})
-                                         }, ), 'client': client, 'channel': channel}))
+        await play_winner_playlist(playlist.name, channel, guild, client)
+
+
+async def play_winner_playlist(playlist_name, channel, guild, client):
+    await send_message(channel, f'The winner is {playlist_name}!')
+    # loop through voice channels to find someone connected
+    for voice_channel in guild.voice_channels:
+        if len(voice_channel.members) > 0:
+            await playlist_play(playlist_name, DotDict(
+                {'message': DotDict({'guild': guild,
+                                     'author': DotDict({'voice': DotDict({'channel': voice_channel})})
+                                     }, ), 'client': client, 'channel': channel}))

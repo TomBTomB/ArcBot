@@ -6,7 +6,7 @@ from development.components.entity.core import Playlist, Poll
 @db_session
 def save_playlist(name: str, user_id: str, guild_id: str) -> str | None:
     name = name.replace(' ', '-')
-    if Playlist.exists(lambda p: p.name == name and p.guild_id == guild_id):
+    if Playlist.exists(name=name, guild_id=guild_id):
         return None
     Playlist(name=name, songs=[], guild_id=guild_id, user_id=user_id)
     return name
@@ -41,7 +41,7 @@ def remove_song(guild_id: str, playlist_name: str, song_url: str, song_name: str
 
 @db_session
 def get_playlist_by_name(guild_id: str, playlist_name: str) -> Playlist | None:
-    return Playlist.get(lambda p: p.name == playlist_name and p.guild_id == guild_id)
+    return Playlist.get(name=playlist_name, guild_id=guild_id)
 
 
 @db_session
@@ -57,6 +57,11 @@ def save_poll(guild_id: str, message_id: str, channel_id: str):
 
 
 @db_session
+def set_poll_winner(poll_id: int, playlist_name: str):
+    Poll[poll_id].winner_name = playlist_name
+
+
+@db_session
 def get_polls():
     return list(Poll.select())
 
@@ -64,3 +69,8 @@ def get_polls():
 @db_session
 def delete_poll(poll_id):
     Poll[poll_id].delete()
+
+
+@db_session
+def get_poll(guild_id: str) -> Poll | None:
+    return Poll.get(guild_id=guild_id)

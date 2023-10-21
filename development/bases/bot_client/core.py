@@ -53,6 +53,7 @@ logger = get_logger('arcBot-logger')
 @client.event
 async def on_ready():
     poll.start()
+    poll_win.start()
     logger.info(f'We have logged in as {client.user}')
 
 
@@ -93,16 +94,16 @@ class DotDict(dict):
     __delattr__ = dict.__delitem__
 
 
-@tasks.loop(time=datetime.time(hour=19, minute=53))
+@tasks.loop(time=datetime.time(hour=20, minute=31))
 async def poll():
-    await notify_poll_winners(client)
+    # await notify_poll_winners(client)
     await send_poll_messages(client)
 
 
-# @tasks.loop(time=datetime.time(hour=19, minute=53))
-# async def poll_win():
-#     await notify_poll_winners(client)
-#     # await send_poll_messages(client)
+@tasks.loop(time=datetime.time(hour=20, minute=32))
+async def poll_win():
+    await notify_poll_winners(client)
+    # await send_poll_messages(client)
 
 
 @client.event

@@ -27,6 +27,7 @@ class Poll(db.Entity):
     guild_id = Required(str)
     message_id = Required(str)
     channel_id = Required(str)
+    winner_name = Optional(str)
 
 
 db.generate_mapping(create_tables=True)

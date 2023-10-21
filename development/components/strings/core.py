@@ -36,6 +36,10 @@ class Strings:
         def song_removed_from_playlist(file_name,
                                        playlist_name): return f'Removed `{file_name}` from playlist `{playlist_name}`.'
 
+        @staticmethod
+        def poll_forced(playlist_name, admin_id):
+            return f'Poll ended. Playlist `{playlist_name}` was forced to win by <@{admin_id}>.'
+
     class Description:
         help = 'Shows every possible command.'
         ping = 'Pings the bot.'
@@ -56,11 +60,13 @@ class Strings:
         playlist_remove = 'Removes a song from a playlist. Usage: `playlist-remove <playlist_name> <song>`'
         playlist_play = 'Plays a playlist with the given name.'
         playlist_info = 'Lists the songs in the playlist with the given name. Usage: `playlist-info <playlist_name>`'
+        poll_force = 'Forces poll to end and a playlist to win.'
 
     class Queue:
         empty = 'The Queue is empty.'
 
     class Error:
+        admin_only = 'Only admins can do that.'
         generic = 'Something went wrong.'
         invalid_move = 'Invalid move operation.'
         invalid_remove = 'Invalid remove operation.'

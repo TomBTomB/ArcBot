@@ -166,6 +166,19 @@ async def playlist_info(args, context) -> Message:
     return await send_message(context.channel, '\n'.join(song_names))
 
 
+async def poll_force(args, context) -> Message:
+    if not context.message.author.guild_permissions.administrator:
+        return await send_message(context.channel, Strings.Error.admin_only)
+    playlist = repository.get_playlist_by_name(str(context.message.guild.id), args)
+    if playlist is None:
+        return await send_message(context.channel, Strings.Error.generic)
+    poll = repository.get_poll(str(context.message.guild.id))
+    if poll is None:
+        return await send_message(context.channel, Strings.Error.generic)
+    repository.set_poll_winner(poll.id, playlist.name)
+    return await send_message(context.channel, Strings.Action.poll_forced(playlist.name, context.message.author.id))
+
+
 class Command:
     def __init__(self, name: str, description: str, function: callable):
         self.__name = name
@@ -205,7 +218,9 @@ commands = {
     'playlist-play': Command(name='playlist-play', description=Strings.Description.playlist_play,
                              function=playlist_play),
     'playlist-info': Command(name='playlist-info', description=Strings.Description.playlist_info,
-                             function=playlist_info)
+                             function=playlist_info),
+    'poll-force': Command(name='poll-force', description=Strings.Description.poll_force,
+                          function=poll_force),
 
 }
 
