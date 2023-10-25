@@ -40,6 +40,14 @@ class Strings:
         def poll_forced(playlist_name, admin_id):
             return f'Poll ended. Playlist `{playlist_name}` was forced to win by <@{admin_id}>.'
 
+        @staticmethod
+        def subscribed(user_id, topic_name):
+            return f'User <@{user_id}> subscribed to {topic_name}.'
+
+        @staticmethod
+        def unsubscribed(user_id, topic_name):
+            return f'User <@{user_id}> unsubscribed from {topic_name}.'
+
     class Description:
         help = 'Shows every possible command.'
         ping = 'Pings the bot.'
@@ -61,6 +69,8 @@ class Strings:
         playlist_play = 'Plays a playlist with the given name.'
         playlist_info = 'Lists the songs in the playlist with the given name. Usage: `playlist-info <playlist_name>`'
         poll_force = 'Forces poll to end and a playlist to win.'
+        subscription_topics = 'Lists all available subscription topics.'
+        subscriptions = 'Lists all your subscriptions.'
 
     class Queue:
         empty = 'The Queue is empty.'
@@ -71,3 +81,8 @@ class Strings:
         invalid_move = 'Invalid move operation.'
         invalid_remove = 'Invalid remove operation.'
         no_playlists = 'There are no playlists, to create one run the command `playlist-create`.'
+        no_topics = 'Currently there are no topics available.'
+        topic_not_found = 'Topic does not exist.'
+        already_subscribed = 'You are already subscribed to that topic.'
+        not_subscribed = 'You are not subscribed to that topic.'
+        no_subscriptions = 'You are not subscribed to any topics.'

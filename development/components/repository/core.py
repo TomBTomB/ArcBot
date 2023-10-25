@@ -1,6 +1,6 @@
 from pony.orm import *
 
-from development.components.entity.core import Playlist, Poll
+from development.components.entity.core import Playlist, Poll, Topic, Subscription
 
 
 @db_session
@@ -74,3 +74,33 @@ def delete_poll(poll_id):
 @db_session
 def get_poll(guild_id: str) -> Poll | None:
     return Poll.get(guild_id=guild_id)
+
+
+@db_session
+def get_topics():
+    return list(Topic.select())
+
+
+@db_session
+def get_topic_by_name(name: str) -> Topic | None:
+    return Topic.get(name=name)
+
+
+@db_session
+def get_subscription_by_user_id_and_topic_id(user_id: str, topic_id: int) -> Topic | None:
+    return Subscription.get(user_id=user_id, topic=Topic[topic_id])
+
+
+@db_session
+def save_subscription(user_id: str, topic_id: int):
+    Subscription(user_id=user_id, topic=Topic[topic_id])
+
+
+@db_session
+def get_subscriptions_by_user_id(user_id: str) -> list[Topic]:
+    return list(Subscription.select(lambda s: s.user_id == user_id).prefetch(Topic))
+
+
+@db_session
+def delete_subscription(subscription_id: int):
+    Subscription[subscription_id].delete()

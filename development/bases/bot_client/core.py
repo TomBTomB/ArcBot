@@ -108,7 +108,7 @@ async def poll_win():
 
 @client.event
 async def on_message(message) -> Message | None:
-    if message.author == client.user:
+    if message.author == client.user or not message.content.startswith(PREFIX):
         return
 
     command = parse(PREFIX, message.content)

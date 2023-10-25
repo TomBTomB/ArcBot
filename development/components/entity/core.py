@@ -30,6 +30,23 @@ class Poll(db.Entity):
     winner_name = Optional(str)
 
 
+class Topic(db.Entity):
+    name = Required(str)
+    external_id = Required(str)
+    subscriptions = Set('Subscription')
+
+
+class Subscription(db.Entity):
+    user_id = Required(str)
+    topic = Required(Topic, lazy=False)
+    composite_key(user_id, topic)
+
+
 db.generate_mapping(create_tables=True)
-# db.drop_all_tables(with_all_data=True)
-# db.create_tables()
+db.drop_all_tables(with_all_data=True)
+db.create_tables()
+
+with db_session:
+    Topic(name='Twenty Øne Piløts', external_id='"3YQKmKGau1PzlVlkL1iodx"')
+    Topic(name='Alec Benjamin', external_id='5IH6FPUwQTxPSXurCrcIov')
+    Topic(name='The Band CAMINO', external_id='6d4jrmreCmsenscuieJERc')

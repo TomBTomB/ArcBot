@@ -179,6 +179,46 @@ async def poll_force(args, context) -> Message:
     return await send_message(context.channel, Strings.Action.poll_forced(playlist.name, context.message.author.id))
 
 
+async def list_topics(args, context) -> Message:
+    topics = repository.get_topics()
+    if len(topics) == 0:
+        return await send_message(context.channel, Strings.Error.no_topics)
+    return await send_message(context.channel,
+                              '\n'.join([f'- {topic.name}' for topic in
+                                         topics]))
+
+
+async def subscribe(args, context) -> Message:
+    topic = repository.get_topic_by_name(args)
+    if topic is None:
+        return await send_message(context.channel, Strings.Error.topic_not_found)
+    subscription = repository.get_subscription_by_user_id_and_topic_id(str(context.message.author.id), topic.id)
+    if subscription is not None:
+        return await send_message(context.channel, Strings.Error.already_subscribed)
+    repository.save_subscription(str(context.message.author.id), topic.id)
+    return await send_message(context.channel, Strings.Action.subscribed(str(context.message.author.id), topic.name))
+
+
+async def unsubscribe(args, context) -> Message:
+    topic = repository.get_topic_by_name(args)
+    if topic is None:
+        return await send_message(context.channel, Strings.Error.topic_not_found)
+    subscription = repository.get_subscription_by_user_id_and_topic_id(str(context.message.author.id), topic.id)
+    if subscription is None:
+        return await send_message(context.channel, Strings.Error.not_subscribed)
+    repository.delete_subscription(subscription.id)
+    return await send_message(context.channel, Strings.Action.unsubscribed(str(context.message.author.id), topic.name))
+
+
+async def list_subscriptions(_args, context) -> Message:
+    subscriptions = repository.get_subscriptions_by_user_id(str(context.message.author.id))
+    if len(subscriptions) == 0:
+        return await send_message(context.channel, Strings.Error.no_subscriptions)
+    return await send_message(context.channel,
+                              '\n'.join([f'- {subscription.topic.name}' for subscription in
+                                         subscriptions]))
+
+
 class Command:
     def __init__(self, name: str, description: str, function: callable):
         self.__name = name
@@ -221,6 +261,14 @@ commands = {
                              function=playlist_info),
     'poll-force': Command(name='poll-force', description=Strings.Description.poll_force,
                           function=poll_force),
+    'subscription-topics': Command(name='subscription-topics', description=Strings.Description.subscription_topics,
+                                   function=list_topics),
+    'subscribe': Command(name='subscribe', description=Strings.Description.subscription_topics,
+                         function=subscribe),
+    'unsubscribe': Command(name='unsubscribe', description=Strings.Description.subscription_topics,
+                           function=unsubscribe),
+    'subscriptions': Command(name='subscriptions', description=Strings.Description.subscriptions,
+                             function=list_subscriptions)
 
 }
 
