@@ -50,5 +50,6 @@ async def send_notification_messages(client):
                     channel = guild.system_channel
                     if channel is None:
                         continue
-                    message = f'New release from {topic.name}!\n{album["name"]}\n{album["external_urls"]["spotify"]}'
+                    message = (f'Hey {" ".join([f"<@{subscriber}>" for subscriber in subscribers])} there\'s a new '
+                               f'release from {topic.name}!\n{album["name"]}\n{album["external_urls"]["spotify"]}')
                     await send_message(channel, message)

@@ -195,7 +195,7 @@ async def subscribe(args, context) -> Message:
     subscription = repository.get_subscription_by_user_id_and_topic_id(str(context.message.author.id), topic.id)
     if subscription is not None:
         return await send_message(context.channel, Strings.Error.already_subscribed)
-    repository.save_subscription(str(context.message.author.id), topic.id)
+    repository.save_subscription(str(context.message.author.id), topic.id, str(context.message.guild.id))
     return await send_message(context.channel, Strings.Action.subscribed(str(context.message.author.id), topic.name))
 
 

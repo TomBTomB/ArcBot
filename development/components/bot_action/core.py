@@ -178,7 +178,7 @@ async def send_message(channel: Channel, message: str) -> Message:
     if len(message_stripped) == 0:
         raise ValueError('Message cannot be empty')
     logger.info(f'Sending message: {message_stripped}')
-    return DiscordMessage(await channel.send(message_stripped))
+    return await channel.send(message_stripped)
 
 
 async def join_or_leave(channel: Channel, voice_client: VoiceClient, should_join: bool):

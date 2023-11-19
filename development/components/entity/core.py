@@ -33,7 +33,7 @@ class Poll(db.Entity):
 class Topic(db.Entity):
     name = Required(str)
     external_id = Required(str)
-    subscriptions = Set('Subscription')
+    subscriptions = Set('Subscription', lazy=False)
     last_release_date = Optional(str)
 
 
@@ -44,11 +44,11 @@ class Subscription(db.Entity):
     composite_key(user_id, topic)
 
 
-db.generate_mapping(create_tables=True)
+db.generate_mapping(create_tables=False)
 db.drop_all_tables(with_all_data=True)
 db.create_tables()
 
 with db_session:
-    Topic(name='Twenty Øne Piløts', external_id='3YQKmKGau1PzlVlkL1iodx', last_release_date='2023-04-20')
-    Topic(name='Alec Benjamin', external_id='5IH6FPUwQTxPSXurCrcIov', last_release_date='2023-11-17')
-    Topic(name='The Band CAMINO', external_id='6d4jrmreCmsenscuieJERc', last_release_date='2023-08-11')
+    Topic(name='Twenty Øne Piløts', external_id='3YQKmKGau1PzlVlkL1iodx', last_release_date='2023-04-21')
+    Topic(name='Alec Benjamin', external_id='5IH6FPUwQTxPSXurCrcIov', last_release_date='2023-11-16')
+    Topic(name='The Band CAMINO', external_id='6d4jrmreCmsenscuieJERc', last_release_date='2023-08-10')

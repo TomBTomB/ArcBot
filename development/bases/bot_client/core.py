@@ -2,6 +2,7 @@ import datetime
 
 from discord.ext import tasks
 from dotenv import load_dotenv
+from pony.orm import db_session
 
 from development.components.command.core import *
 from development.components.command_parser.core import parse
@@ -25,6 +26,7 @@ def setup_client():
     return discord.Client(intents=intents)
 
 
+@db_session
 def start_bot():
     client.run(DISCORD_KEY)
 
@@ -100,7 +102,7 @@ async def poll_win():
 
 
 # @tasks.loop(seconds=30)
-@tasks.loop(time=datetime.time(hour=21, minute=00))
+@tasks.loop(time=datetime.time(hour=21, minute=40))
 async def notifications():
     await send_notification_messages(client)
 
