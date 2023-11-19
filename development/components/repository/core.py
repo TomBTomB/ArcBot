@@ -87,13 +87,18 @@ def get_topic_by_name(name: str) -> Topic | None:
 
 
 @db_session
+def update_topic_last_release_date(topic_id: int, last_release_date: str):
+    Topic[topic_id].last_release_date = last_release_date
+
+
+@db_session
 def get_subscription_by_user_id_and_topic_id(user_id: str, topic_id: int) -> Topic | None:
     return Subscription.get(user_id=user_id, topic=Topic[topic_id])
 
 
 @db_session
-def save_subscription(user_id: str, topic_id: int):
-    Subscription(user_id=user_id, topic=Topic[topic_id])
+def save_subscription(user_id: str, topic_id: int, guild_id: str):
+    Subscription(user_id=user_id, topic=Topic[topic_id], guild_id=guild_id)
 
 
 @db_session

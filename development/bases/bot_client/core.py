@@ -1,21 +1,13 @@
 import datetime
-import multiprocessing
-import os
-from multiprocessing import freeze_support
 
-import discord
 from discord.ext import tasks
 from dotenv import load_dotenv
 
-from development.components.audio_fetcher.core import fetch_audio_file
-from development.components.bot_action.core import *
 from development.components.command.core import *
 from development.components.command_parser.core import parse
 from development.components.log.core import get_logger
 from development.components.poll_manager.core import *
-
-from development.components.queue_manager.core import add_song, get_queue_song_names, move_song, remove_song
-from development.components.repository import core as repository
+from development.components.notification_manager.core import *
 
 load_dotenv()
 
@@ -54,6 +46,7 @@ logger = get_logger('arcBot-logger')
 async def on_ready():
     poll.start()
     poll_win.start()
+    notifications.start()
     logger.info(f'We have logged in as {client.user}')
 
 
@@ -104,6 +97,12 @@ async def poll():
 async def poll_win():
     await notify_poll_winners(client)
     # await send_poll_messages(client)
+
+
+# @tasks.loop(seconds=30)
+@tasks.loop(time=datetime.time(hour=21, minute=00))
+async def notifications():
+    await send_notification_messages(client)
 
 
 @client.event

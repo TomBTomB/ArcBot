@@ -14,6 +14,17 @@ class DotDict(dict):
     __delattr__ = dict.__delitem__
 
 
+async def play_winner_playlist(playlist_name, channel, guild, client):
+    await send_message(channel, f'The winner is {playlist_name}!')
+    # loop through voice channels to find someone connected
+    for voice_channel in guild.voice_channels:
+        if len(voice_channel.members) > 0:
+            await playlist_play(playlist_name, DotDict(
+                {'message': DotDict({'guild': guild,
+                                     'author': DotDict({'voice': DotDict({'channel': voice_channel})})
+                                     }, ), 'client': client, 'channel': channel}))
+
+
 async def send_poll_messages(client):
     print(f'Sending polls to {client.guilds}')
     for guild in client.guilds:
@@ -60,14 +71,3 @@ async def notify_poll_winners(client):
         if playlist is None:
             continue
         await play_winner_playlist(playlist.name, channel, guild, client)
-
-
-async def play_winner_playlist(playlist_name, channel, guild, client):
-    await send_message(channel, f'The winner is {playlist_name}!')
-    # loop through voice channels to find someone connected
-    for voice_channel in guild.voice_channels:
-        if len(voice_channel.members) > 0:
-            await playlist_play(playlist_name, DotDict(
-                {'message': DotDict({'guild': guild,
-                                     'author': DotDict({'voice': DotDict({'channel': voice_channel})})
-                                     }, ), 'client': client, 'channel': channel}))

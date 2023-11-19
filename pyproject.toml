@@ -13,6 +13,10 @@ packages = [
     { include = "arcbot/command", from = "components" },
     { include = "arcbot/queue_manager", from = "components" },
     { include = "arcbot/strings", from = "components" },
+    {include = "arcbot/entity",from = "components"},
+    {include = "arcbot/repository",from = "components"},
+    {include = "arcbot/poll_manager",from = "components"},
+    {include = "arcbot/notification_manager",from = "components"},
 ]
 
 [tool.poetry.dependencies]
@@ -27,6 +31,7 @@ yt-dlp = "2023.7.6"
 pony = "^0.7.17"
 psycopg2-binary = "^2.9.8"
 schedule = "^1.2.1"
+requests = "^2.31.0"
 
 
 [build-system]

@@ -34,10 +34,12 @@ class Topic(db.Entity):
     name = Required(str)
     external_id = Required(str)
     subscriptions = Set('Subscription')
+    last_release_date = Optional(str)
 
 
 class Subscription(db.Entity):
     user_id = Required(str)
+    guild_id = Required(str)
     topic = Required(Topic, lazy=False)
     composite_key(user_id, topic)
 
@@ -47,6 +49,6 @@ db.drop_all_tables(with_all_data=True)
 db.create_tables()
 
 with db_session:
-    Topic(name='Twenty Øne Piløts', external_id='"3YQKmKGau1PzlVlkL1iodx"')
-    Topic(name='Alec Benjamin', external_id='5IH6FPUwQTxPSXurCrcIov')
-    Topic(name='The Band CAMINO', external_id='6d4jrmreCmsenscuieJERc')
+    Topic(name='Twenty Øne Piløts', external_id='3YQKmKGau1PzlVlkL1iodx', last_release_date='2023-04-20')
+    Topic(name='Alec Benjamin', external_id='5IH6FPUwQTxPSXurCrcIov', last_release_date='2023-11-17')
+    Topic(name='The Band CAMINO', external_id='6d4jrmreCmsenscuieJERc', last_release_date='2023-08-11')
