@@ -1,16 +1,9 @@
 import os
 
-import discord
-from arcbot.strings.core import *
-from arcbot.log.core import *
-from arcbot.bot_action.core import *
-from arcbot.bot_action.core import *
 from arcbot.audio_fetcher.core import *
+from arcbot.bot_action.core import *
 from arcbot.queue_manager.core import *
 from arcbot.repository import core as repository
-
-
-logger = get_logger('arcBot-logger')
 
 
 async def help_command(_args, context) -> Message:
@@ -118,7 +111,7 @@ async def playlist_create(args, context) -> Message:
     saved_name = repository.save_playlist(args, str(context.message.author.id), str(context.message.guild.id))
     if saved_name:
         return await send_message(context.channel, Strings.Action.playlist_created(saved_name))
-    return await send_message(context.channel, Strings.Error.generic)
+    return await send_message(context.channel, Strings.Error.creating_playlist)
 
 
 async def playlist_add(args, context) -> Message:
@@ -128,14 +121,14 @@ async def playlist_add(args, context) -> Message:
                                     str(context.message.author.id))
     if was_added:
         return await send_message(context.channel, Strings.Action.song_added_to_playlist(file_name, playlist_name))
-    return await send_message(context.channel, Strings.Error.generic)
+    return await send_message(context.channel, Strings.Error.adding_to_playlist)
 
 
 async def playlist_delete(args, context) -> Message:
     playlist_name = repository.delete_playlist(str(context.message.guild.id), args, str(context.message.author.id))
     if playlist_name:
         return await send_message(context.channel, Strings.Action.playlist_deleted(playlist_name))
-    return await send_message(context.channel, Strings.Error.generic)
+    return await send_message(context.channel, Strings.Error.deleting_playlist)
 
 
 async def playlist_remove(args, context) -> Message:
@@ -145,13 +138,13 @@ async def playlist_remove(args, context) -> Message:
                                          str(context.message.author.id))
     if was_removed:
         return await send_message(context.channel, Strings.Action.song_removed_from_playlist(file_name, playlist_name))
-    return await send_message(context.channel, Strings.Error.generic)
+    return await send_message(context.channel, Strings.Error.removing_from_playlist)
 
 
 async def playlist_play(args, context) -> Message:
     playlist = repository.get_playlist_by_name(str(context.message.guild.id), args)
     if playlist is None or len(playlist.songs) == 0:
-        return await send_message(context.channel, Strings.Error.generic)
+        return await send_message(context.channel, Strings.Error.playlist_not_found)
     song_to_play = playlist.songs[0].split(' ', 1)[0]
     response = await play(song_to_play, context)
     for song in playlist.songs[1:]:
@@ -162,7 +155,7 @@ async def playlist_play(args, context) -> Message:
 async def playlist_info(args, context) -> Message:
     playlist = repository.get_playlist_by_name(str(context.message.guild.id), args)
     if playlist is None:
-        return await send_message(context.channel, Strings.Error.generic)
+        return await send_message(context.channel, Strings.Error.playlist_not_found)
     song_names = []
     for song in playlist.songs:
         song_names.append(f'- {song.split(" ", 1)[1]}')
@@ -174,10 +167,10 @@ async def poll_force(args, context) -> Message:
         return await send_message(context.channel, Strings.Error.admin_only)
     playlist = repository.get_playlist_by_name(str(context.message.guild.id), args)
     if playlist is None:
-        return await send_message(context.channel, Strings.Error.generic)
+        return await send_message(context.channel, Strings.Error.playlist_not_found)
     poll = repository.get_poll(str(context.message.guild.id))
     if poll is None:
-        return await send_message(context.channel, Strings.Error.generic)
+        return await send_message(context.channel, Strings.Error.poll_not_found)
     repository.set_poll_winner(poll.id, playlist.name)
     return await send_message(context.channel, Strings.Action.poll_forced(playlist.name, context.message.author.id))
 
@@ -266,7 +259,7 @@ commands = {
                           function=poll_force),
     'subscription-topics': Command(name='subscription-topics', description=Strings.Description.subscription_topics,
                                    function=list_topics),
-    'subscribe': Command(name='subscribe', description=Strings.Description.subscribe,
+    'subscribe': Command(name='subscribe', description=Strings.Description.subscription_topics,
                          function=subscribe),
     'unsubscribe': Command(name='unsubscribe', description=Strings.Description.subscription_topics,
                            function=unsubscribe),
@@ -278,7 +271,11 @@ commands = {
 
 async def run(name, args, context):
     command = commands[name]
-    return await command.execute(args, context)
+    try:
+        return await command.execute(args, context)
+    except Exception as e:
+        logger.error(f'Error executing command: {e}')
+        return await send_message(context.channel, Strings.Error.generic)
 
 
 async def run_join_or_leave(message, should_join) -> Message:

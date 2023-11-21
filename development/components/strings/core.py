@@ -87,3 +87,10 @@ class Strings:
         already_subscribed = 'You are already subscribed to that topic.'
         not_subscribed = 'You are not subscribed to that topic.'
         no_subscriptions = 'You are not subscribed to any topics.'
+        creating_playlist = 'There was an error creating the playlist.'
+        adding_to_playlist = ('There was an error adding the song to the playlist. Check if the playlist with that '
+                              'name exists.')
+        deleting_playlist = 'There was an error deleting the playlist. Check if the playlist with that name exists.'
+        removing_from_playlist = 'There was an error removing the song from the playlist.'
+        playlist_not_found = 'Playlist does not exist or is empty.'
+        poll_not_found = 'There is no poll running.'
