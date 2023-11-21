@@ -11,7 +11,7 @@ def save_playlist(name: str, user_id: str, guild_id: str) -> str | None:
     return name
 
 
-def add_sog(guild_id: str, playlist_name: str, song_url: str, song_name: str, requesting_user_id: str) -> bool:
+def add_song(guild_id: str, playlist_name: str, song_url: str, song_name: str, requesting_user_id: str) -> bool:
     playlist = Playlist.get(lambda p: p.name == playlist_name and p.guild_id == guild_id)
     if playlist is None or song_url in playlist.songs or playlist.user_id != requesting_user_id:
         return False
@@ -19,7 +19,7 @@ def add_sog(guild_id: str, playlist_name: str, song_url: str, song_name: str, re
     return True
 
 
-def deleteplaylist(guild_id: str, playlist_name: str, requesting_user_id: str) -> str | None:
+def delete_playlist(guild_id: str, playlist_name: str, requesting_user_id: str) -> str | None:
     playlist = Playlist.get(lambda p: p.name == playlist_name and p.guild_id == guild_id)
     if playlist is None or playlist.user_id != requesting_user_id:
         return None
@@ -27,7 +27,7 @@ def deleteplaylist(guild_id: str, playlist_name: str, requesting_user_id: str) -
     return playlist_name
 
 
-def removesong(guild_id: str, playlist_name: str, song_url: str, song_name: str, requesting_user_id: str) -> bool:
+def remove_song(guild_id: str, playlist_name: str, song_url: str, song_name: str, requesting_user_id: str) -> bool:
     playlist = Playlist.get(lambda p: p.name == playlist_name and p.guild_id == guild_id)
     if playlist is None or song_url + ' ' + song_name not in playlist.songs or playlist.user_id != requesting_user_id:
         return False
@@ -35,15 +35,15 @@ def removesong(guild_id: str, playlist_name: str, song_url: str, song_name: str,
     return True
 
 
-def get_plylist_by_name(guild_id: str, playlist_name: str) -> Playlist | None:
+def get_playlist_by_name(guild_id: str, playlist_name: str) -> Playlist | None:
     return Playlist.get(name=playlist_name, guild_id=guild_id)
 
 
-def get_plylists(guild_id: str) -> list[Playlist]:
+def get_playlists(guild_id: str) -> list[Playlist]:
     return list(Playlist.select(lambda p: p.guild_id == guild_id))
 
 
-def save_pll(guild_id: str, message_id: str, channel_id: str):
+def save_poll(guild_id: str, message_id: str, channel_id: str):
     if Poll.exists(lambda p: p.guild_id == guild_id):
         return
     Poll(guild_id=guild_id, message_id=message_id, channel_id=channel_id)
@@ -57,11 +57,11 @@ def get_polls():
     return list(Poll.select())
 
 
-def deletepoll(poll_id):
+def delete_poll(poll_id):
     Poll[poll_id].delete()
 
 
-def get_pol(guild_id: str) -> Poll | None:
+def get_poll(guild_id: str) -> Poll | None:
     return Poll.get(guild_id=guild_id)
 
 
@@ -89,5 +89,5 @@ def get_subscriptions_by_user_id(user_id: str) -> list[Topic]:
     return list(Subscription.select(lambda s: s.user_id == user_id).prefetch(Topic))
 
 
-def delet_subscription(subscription_id: int):
+def delete_subscription(subscription_id: int):
     Subscription[subscription_id].delete()
