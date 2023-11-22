@@ -1,5 +1,3 @@
-from pony.orm import *
-
 from development.components.entity.core import Playlist, Poll, Topic, Subscription
 
 

@@ -45,10 +45,10 @@ class Subscription(db.Entity):
 
 
 db.generate_mapping(create_tables=False)
-db.drop_all_tables(with_all_data=True)
-db.create_tables()
-
-with db_session:
-    Topic(name='Twenty Øne Piløts', external_id='3YQKmKGau1PzlVlkL1iodx', last_release_date='2023-04-21')
-    Topic(name='Alec Benjamin', external_id='5IH6FPUwQTxPSXurCrcIov', last_release_date='2023-11-16')
-    Topic(name='The Band CAMINO', external_id='6d4jrmreCmsenscuieJERc', last_release_date='2023-08-10')
+# db.drop_all_tables(with_all_data=True)
+# db.create_tables()
+#
+# with db_session:
+#     Topic(name='Twenty Øne Piløts', external_id='3YQKmKGau1PzlVlkL1iodx', last_release_date='2023-04-21')
+#     Topic(name='Alec Benjamin', external_id='5IH6FPUwQTxPSXurCrcIov', last_release_date='2023-11-16')
+#     Topic(name='The Band CAMINO', external_id='6d4jrmreCmsenscuieJERc', last_release_date='2023-08-10')

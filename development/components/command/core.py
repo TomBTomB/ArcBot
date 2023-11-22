@@ -1,13 +1,19 @@
+import importlib
 import os
+
+from dotenv import load_dotenv
 
 from development.components.audio_fetcher.core import fetch_audio_file
 from development.components.bot_action.core import *
+from development.components.entity.core import Playlist
 from development.components.log.core import get_logger
 from development.components.queue_manager.core import add_song, get_queue_song_names, move_song, remove_song
-from development.components.repository import core as repository
 from development.components.strings.core import Strings
 
 logger = get_logger('arcBot-logger')
+load_dotenv()
+
+repository = importlib.import_module(os.getenv('REPOSITORY_MODULE'))
 
 
 async def help_command(_args, context) -> Message:
@@ -103,7 +109,7 @@ async def remove(args, context) -> Message:
 
 
 async def list_playlists(_args, context) -> Message:
-    playlists = repository.get_playlists(str(context.message.guild.id))
+    playlists: list[Playlist] = repository.get_playlists(str(context.message.guild.id))
     if len(playlists) == 0:
         return await send_message(context.channel, Strings.Error.no_playlists)
     return await send_message(context.channel,
@@ -158,7 +164,7 @@ async def playlist_play(args, context) -> Message:
 
 async def playlist_info(args, context) -> Message:
     playlist = repository.get_playlist_by_name(str(context.message.guild.id), args)
-    if playlist is None:
+    if playlist is None or len(playlist.songs) == 0:
         return await send_message(context.channel, Strings.Error.playlist_not_found)
     song_names = []
     for song in playlist.songs:

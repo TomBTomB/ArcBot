@@ -1,9 +1,11 @@
+import importlib
+import os
 from random import random
 
 from development.components.bot_action.core import send_message, add_reactions
 from development.components.command.core import play, playlist_play
-from development.components.repository import core as repository
 
+repository = importlib.import_module(os.getenv('REPOSITORY_MODULE'))
 emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
 
 
@@ -40,7 +42,7 @@ async def send_poll_messages(client):
             message += f'{emojis[i]} {playlists[i].name}\n'
         sent_message = await send_message(channel, message)
         await add_reactions(sent_message, emojis[:min(len(playlists), 10)])
-        repository.save_poll(str(guild.id), str(sent_message.get_id()), str(channel.id))
+        repository.save_poll(str(guild.id), str(sent_message.id), str(channel.id))
 
 
 async def notify_poll_winners(client):
@@ -49,7 +51,7 @@ async def notify_poll_winners(client):
         guild = client.get_guild(int(poll.guild_id))
         channel = guild.get_channel(int(poll.channel_id))
 
-        if poll.winner_name is not None:
+        if poll.winner_name is not None and poll.winner_name != '':
             await play_winner_playlist(poll.winner_name, channel, guild, client)
             continue
 
