@@ -14,6 +14,7 @@ logger = get_logger('arcBot-logger')
 load_dotenv()
 
 repository = importlib.import_module(os.getenv('REPOSITORY_MODULE'))
+send_message = importlib.import_module(os.getenv('SEND_MESSAGE_MODULE')).send_message
 
 
 async def help_command(_args, context) -> Message:
@@ -56,7 +57,7 @@ async def play(args, context) -> Message:
     reply = play_audio_file(file_name, url, voice_client,
                             lambda: play_next_song(context.channel, voice_client, context.message.guild.id,
                                                    context.client.loop))
-    return await send_message(context.channel, reply)
+    return await send_message(DiscordMessage(context.channel), reply)
 
 
 async def pause(_args, context) -> Message:

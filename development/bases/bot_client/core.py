@@ -90,16 +90,14 @@ class DotDict(dict):
     __delattr__ = dict.__delitem__
 
 
-@tasks.loop(time=datetime.time(hour=19, minute=48))
+@tasks.loop(time=datetime.time(hour=14, minute=21))
 async def poll():
-    # await notify_poll_winners(client)
     await send_poll_messages(client)
 
 
-@tasks.loop(time=datetime.time(hour=19, minute=49))
+@tasks.loop(time=datetime.time(hour=14, minute=22))
 async def poll_win():
     await notify_poll_winners(client)
-    # await send_poll_messages(client)
 
 
 # @tasks.loop(seconds=30)

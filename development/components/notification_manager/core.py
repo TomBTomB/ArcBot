@@ -1,12 +1,15 @@
+import importlib
 import os
 
 import requests
 from dotenv import load_dotenv
 
-from development.components.bot_action.core import send_message
+from development.components.discord_model.core import *
 from development.components.repository import core as repository
 
 load_dotenv()
+
+send_message = importlib.import_module(os.getenv('SEND_MESSAGE_MODULE')).send_message
 
 
 async def send_notification_messages(client):
@@ -52,4 +55,4 @@ async def send_notification_messages(client):
                         continue
                     message = (f'Hey {" ".join([f"<@{subscriber}>" for subscriber in subscribers])} there\'s a new '
                                f'release from {topic.name}!\n{album["name"]}\n{album["external_urls"]["spotify"]}')
-                    await send_message(channel, message)
+                    await send_message(DiscordChannel(channel), message)
