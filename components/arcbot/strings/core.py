@@ -68,7 +68,7 @@ class Strings:
         playlist_remove = 'Removes a song from a playlist. Usage: `playlist-remove <playlist_name> <song>`'
         playlist_play = 'Plays a playlist with the given name.'
         playlist_info = 'Lists the songs in the playlist with the given name. Usage: `playlist-info <playlist_name>`'
-        poll_force = 'Forces poll to end and a playlist to win.'
+        poll_force = 'Forces a playlist to win the poll.'
         subscribe = 'Subscribes you to a topic.'
         subscription_topics = 'Lists all available subscription topics.'
         subscriptions = 'Lists all your subscriptions.'

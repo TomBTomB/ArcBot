@@ -1,4 +1,13 @@
+import importlib
+import os
+from random import random
 
+from arcbot.bot_action.core import add_reactions
+from arcbot.command.core import playlist_play
+from arcbot.discord_model.core import DiscordChannel, DiscordMessage
+
+repository = importlib.import_module(os.getenv('REPOSITORY_MODULE'))
+send_message = importlib.import_module(os.getenv('SEND_MESSAGE_MODULE')).send_message
 emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
 
 
@@ -10,7 +19,7 @@ class DotDict(dict):
 
 
 async def play_winner_playlist(playlist_name, channel, guild, client):
-    await send_message(channel, f'The winner is {playlist_name}!')
+    await send_message(DiscordChannel(channel), f'The winner is {playlist_name}!')
     # loop through voice channels to find someone connected
     for voice_channel in guild.voice_channels:
         if len(voice_channel.members) > 0:
@@ -33,7 +42,8 @@ async def send_poll_messages(client):
         message = "Vote for tomorrow's Playlists:\n"
         for i in range(min(len(playlists), 10)):
             message += f'{emojis[i]} {playlists[i].name}\n'
-        sent_message = await send_message(channel, message)
+        sent_message = await send_message(DiscordChannel(channel), message)
+        sent_message = DiscordMessage(await channel.fetch_message(sent_message.get_id()))
         await add_reactions(sent_message, emojis[:min(len(playlists), 10)])
         repository.save_poll(str(guild.id), str(sent_message.get_id()), str(channel.id))
 
@@ -44,7 +54,7 @@ async def notify_poll_winners(client):
         guild = client.get_guild(int(poll.guild_id))
         channel = guild.get_channel(int(poll.channel_id))
 
-        if poll.winner_name is not None:
+        if poll.winner_name is not None and poll.winner_name != '':
             await play_winner_playlist(poll.winner_name, channel, guild, client)
             continue
 
@@ -56,7 +66,8 @@ async def notify_poll_winners(client):
         # sort by vote count
         vote_count = {k: v for k, v in sorted(vote_count.items(), key=lambda item: item[1], reverse=True)}
         # check for tie
-        if list(vote_count.values())[0] == list(vote_count.values())[1]:
+        vote_amounts = list(vote_count.values())
+        if len(vote_amounts) > 1 and vote_amounts[0] == vote_amounts[1]:
             await send_message(channel, "There was a tie! Picking random playlist...")
             winner = list(vote_count.keys())[int(random() * len(vote_count))]
         else:

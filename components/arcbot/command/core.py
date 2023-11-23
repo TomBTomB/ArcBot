@@ -1,9 +1,20 @@
+import importlib
 import os
 
-from arcbot.audio_fetcher.core import *
+from dotenv import load_dotenv
+
+from arcbot.audio_fetcher.core import fetch_audio_file
 from arcbot.bot_action.core import *
-from arcbot.queue_manager.core import *
-from arcbot.repository import core as repository
+from arcbot.entity.core import Playlist
+from arcbot.log.core import get_logger
+from arcbot.queue_manager.core import add_song, get_queue_song_names, move_song, remove_song
+from arcbot.strings.core import Strings
+
+logger = get_logger('arcBot-logger')
+load_dotenv()
+
+repository = importlib.import_module(os.getenv('REPOSITORY_MODULE'))
+send_message = importlib.import_module(os.getenv('SEND_MESSAGE_MODULE')).send_message
 
 
 async def help_command(_args, context) -> Message:
@@ -46,7 +57,7 @@ async def play(args, context) -> Message:
     reply = play_audio_file(file_name, url, voice_client,
                             lambda: play_next_song(context.channel, voice_client, context.message.guild.id,
                                                    context.client.loop))
-    return await send_message(context.channel, reply)
+    return await send_message(DiscordMessage(context.channel), reply)
 
 
 async def pause(_args, context) -> Message:
@@ -99,7 +110,7 @@ async def remove(args, context) -> Message:
 
 
 async def list_playlists(_args, context) -> Message:
-    playlists = repository.get_playlists(str(context.message.guild.id))
+    playlists: list[Playlist] = repository.get_playlists(str(context.message.guild.id))
     if len(playlists) == 0:
         return await send_message(context.channel, Strings.Error.no_playlists)
     return await send_message(context.channel,
@@ -154,7 +165,7 @@ async def playlist_play(args, context) -> Message:
 
 async def playlist_info(args, context) -> Message:
     playlist = repository.get_playlist_by_name(str(context.message.guild.id), args)
-    if playlist is None:
+    if playlist is None or len(playlist.songs) == 0:
         return await send_message(context.channel, Strings.Error.playlist_not_found)
     song_names = []
     for song in playlist.songs:

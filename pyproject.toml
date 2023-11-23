@@ -6,6 +6,8 @@ authors = ["TomasBruno1 <tomas.bruno@ing.austral.edu.ar>, tomasberretta <tomas.b
 readme = "README.md"
 packages = [
     { include = "arcbot/bot_client", from = "bases" },
+    { include = "arcbot/db_api", from = "bases" },
+    { include = "arcbot/messenger_api", from = "bases" },
     { include = "arcbot/command_parser", from = "components" },
     { include = "arcbot/bot_action", from = "components" },
     { include = "arcbot/audio_fetcher", from = "components" },
@@ -13,10 +15,14 @@ packages = [
     { include = "arcbot/command", from = "components" },
     { include = "arcbot/queue_manager", from = "components" },
     { include = "arcbot/strings", from = "components" },
-    {include = "arcbot/entity",from = "components"},
-    {include = "arcbot/repository",from = "components"},
-    {include = "arcbot/poll_manager",from = "components"},
-    {include = "arcbot/notification_manager",from = "components"},
+    { include = "arcbot/entity", from = "components" },
+    { include = "arcbot/repository", from = "components" },
+    { include = "arcbot/poll_manager", from = "components" },
+    { include = "arcbot/notification_manager", from = "components" },
+    { include = "arcbot/messenger", from = "components" },
+    { include = "arcbot/discord_model", from = "components" },
+    {include = "arcbot/messenger_remote",from = "components"},
+    {include = "arcbot/repository_remote",from = "components"},
 ]
 
 [tool.poetry.dependencies]
@@ -32,7 +38,7 @@ pony = "^0.7.17"
 psycopg2-binary = "^2.9.8"
 schedule = "^1.2.1"
 requests = "^2.31.0"
-flask = {extras = ["async"], version = "^3.0.0"}
+flask = { extras = ["async"], version = "^3.0.0" }
 
 
 [build-system]

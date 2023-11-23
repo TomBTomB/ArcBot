@@ -1,19 +1,17 @@
 import os
 
+from pony.orm import *
 from dotenv import load_dotenv
-from pony.orm import Database, Required, composite_key, StrArray, Optional, Set, db_session
 
 load_dotenv()
 db = Database()
 db.bind(
-    provider='sqlite',
-    filename='database.sqlite',
-    create_db=True
-    # user=os.getenv("POSTGRES_USER"),
-    # password=os.getenv("POSTGRES_PASSWORD"),
-    # host=os.getenv("DB_HOST"),
-    # port=os.getenv("DB_PORT"),
-    # database=os.getenv("POSTGRES_DB"),
+    provider='postgres',
+    user=os.getenv("POSTGRES_USER"),
+    password=os.getenv("POSTGRES_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
+    database=os.getenv("POSTGRES_DB"),
 )
 
 

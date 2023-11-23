@@ -4,13 +4,14 @@ import os
 import discord
 from discord.ext import tasks
 from dotenv import load_dotenv
+from pony.orm import db_session
 
 from arcbot.command.core import *
 from arcbot.command_parser.core import parse
 from arcbot.log.core import get_logger
 from arcbot.poll_manager.core import *
 from arcbot.notification_manager.core import *
-from pony.orm import db_session
+from arcbot.discord_model.core import Message
 
 load_dotenv()
 
@@ -91,20 +92,18 @@ class DotDict(dict):
     __delattr__ = dict.__delitem__
 
 
-@tasks.loop(time=datetime.time(hour=20, minute=31))
+@tasks.loop(time=datetime.time(hour=14, minute=21))
 async def poll():
-    # await notify_poll_winners(client)
     await send_poll_messages(client)
 
 
-@tasks.loop(time=datetime.time(hour=20, minute=32))
+@tasks.loop(time=datetime.time(hour=14, minute=22))
 async def poll_win():
     await notify_poll_winners(client)
-    # await send_poll_messages(client)
 
 
 # @tasks.loop(seconds=30)
-@tasks.loop(time=datetime.time(hour=21, minute=40))
+@tasks.loop(minutes=1)
 async def notifications():
     await send_notification_messages(client)
 
