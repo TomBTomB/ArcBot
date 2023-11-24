@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "messaging_service"
+version = "0.1.0"
+description = ""
+authors = ['TomasBruno1 <tomas.bruno@ing.austral.edu.ar>, tomasberretta <tomas.berretta@ing.austral.edu.ar>']
+license = ""
+
+packages = [
+    { include = 'arcbot/messenger_api', from = '../../bases' },
+    { include = "arcbot/log", from = "../../components" },
+    { include = "arcbot/discord_model", from = "../../components" },
+    { include = "arcbot/messenger", from = "../../components" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = '^1.0.0'
+discord-py = "2.2.2"
+flask = {extras = ["async"], version = "^3.0.0"}
+
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

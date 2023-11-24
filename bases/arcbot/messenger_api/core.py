@@ -6,9 +6,8 @@ import discord
 from dotenv import load_dotenv
 from flask import Flask, request
 
-from arcbot.bot_action.core import DiscordChannel
+from arcbot.discord_model.core import DiscordChannel
 from arcbot.messenger.core import send_message
-
 
 load_dotenv()
 DISCORD_KEY = os.getenv('BOT_TOKEN')

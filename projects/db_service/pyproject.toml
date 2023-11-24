@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "db_service"
+version = "0.1.0"
+description = ""
+authors = ['TomasBruno1 <tomas.bruno@ing.austral.edu.ar>, tomasberretta <tomas.berretta@ing.austral.edu.ar>']
+license = ""
+
+packages = [
+    { include = 'arcbot/db_api', from = '../../bases' },
+    { include = "arcbot/repository", from = "../../components" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = '^1.0.0'
+psycopg2-binary = "^2.9.9"
+flask = { extras = ["async"], version = "^3.0.0" }
+pony = "^0.7.17"
+
+
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

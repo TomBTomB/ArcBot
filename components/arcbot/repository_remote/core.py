@@ -1,6 +1,7 @@
-import requests
+import os
 
-from arcbot.entity.core import *
+import requests
+from dotenv import load_dotenv
 
 
 class DotDict(dict):
@@ -10,7 +11,8 @@ class DotDict(dict):
     __delattr__ = dict.__delitem__
 
 
-URL = 'http://localhost:5000/'
+load_dotenv()
+URL = f'{os.getenv("REPOSITORY_URL")}/'
 
 
 def save_playlist(name: str, user_id: str, guild_id: str) -> str | None:
@@ -42,14 +44,14 @@ def remove_song(guild_id: str, playlist_name: str, song_url: str, song_name: str
     return response.status_code == 200
 
 
-def get_playlist_by_name(guild_id: str, playlist_name: str) -> Playlist | None:
+def get_playlist_by_name(guild_id: str, playlist_name: str):
     response = requests.get(URL + 'playlist/' + playlist_name, json={'guild_id': guild_id})
     if response.status_code == 200:
         return DotDict(response.json())
     return None
 
 
-def get_playlists(guild_id: str) -> list[Playlist]:
+def get_playlists(guild_id: str):
     response = requests.get(URL + 'playlist', json={'guild_id': guild_id})
     if response.status_code == 200:
         return [DotDict(playlist) for playlist in response.json()]
@@ -75,7 +77,7 @@ def delete_poll(poll_id):
     requests.delete(URL + 'poll/' + str(poll_id))
 
 
-def get_poll(guild_id: str) -> Poll | None:
+def get_poll(guild_id: str):
     response = requests.get(URL + 'poll/' + guild_id)
     if response.status_code == 200:
         return DotDict(response.json())
@@ -89,7 +91,7 @@ def get_topics():
     return []
 
 
-def get_topic_by_name(name: str) -> Topic | None:
+def get_topic_by_name(name: str):
     response = requests.get(URL + 'topic/' + name)
     if response.status_code == 200:
         return DotDict(response.json())
@@ -100,7 +102,7 @@ def update_topic_last_release_date(topic_id: int, last_release_date: str):
     requests.put(URL + 'topic/' + str(topic_id), json={'last_release_date': last_release_date})
 
 
-def get_subscription_by_user_id_and_topic_id(user_id: str, topic_id: int) -> Topic | None:
+def get_subscription_by_user_id_and_topic_id(user_id: str, topic_id: int):
     response = requests.get(URL + 'subscription/' + user_id + '/' + str(topic_id))
     if response.status_code == 200:
         return DotDict(response.json())
@@ -111,7 +113,7 @@ def save_subscription(user_id: str, topic_id: int, guild_id: str):
     requests.post(URL + 'subscription', json={'user_id': user_id, 'topic_id': topic_id, 'guild_id': guild_id})
 
 
-def get_subscriptions_by_user_id(user_id: str) -> list[Topic]:
+def get_subscriptions_by_user_id(user_id: str):
     response = requests.get(URL + 'subscription/' + user_id)
     if response.status_code == 200:
         subscriptions = [DotDict(subscription) for subscription in response.json()]

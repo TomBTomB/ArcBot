@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: bot-remote
+  name: bot-remote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: bot-remote
+  strategy: { }
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: bot-remote
+    spec:
+      containers:
+        - env:
+            - name: BOT_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: BOT_TOKEN
+                  name: bot-remote--env
+            - name: MESSENGER_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: MESSENGER_URL
+                  name: bot-remote--env
+            - name: OPUS_LIB
+              valueFrom:
+                configMapKeyRef:
+                  key: OPUS_LIB
+                  name: bot-remote--env
+            - name: REPOSITORY_MODULE
+              valueFrom:
+                configMapKeyRef:
+                  key: REPOSITORY_MODULE
+                  name: bot-remote--env
+            - name: REPOSITORY_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: REPOSITORY_URL
+                  name: bot-remote--env
+            - name: SEND_MESSAGE_MODULE
+              valueFrom:
+                configMapKeyRef:
+                  key: SEND_MESSAGE_MODULE
+                  name: bot-remote--env
+            - name: SHARDED
+              valueFrom:
+                configMapKeyRef:
+                  key: SHARDED
+                  name: bot-remote--env
+            - name: SPOTIFY_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  key: SPOTIFY_CLIENT_ID
+                  name: bot-remote--env
+            - name: SPOTIFY_CLIENT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: SPOTIFY_CLIENT_SECRET
+                  name: bot-remote--env
+          image: arcbot_remote:latest
+          imagePullPolicy: Never
+          name: bot-remote
+          resources: { }
+      restartPolicy: Always
+status: { }

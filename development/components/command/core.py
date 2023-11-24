@@ -57,7 +57,7 @@ async def play(args, context) -> Message:
     reply = play_audio_file(file_name, url, voice_client,
                             lambda: play_next_song(context.channel, voice_client, context.message.guild.id,
                                                    context.client.loop))
-    return await send_message(DiscordMessage(context.channel), reply)
+    return await send_message(DiscordChannel(context.channel), reply)
 
 
 async def pause(_args, context) -> Message:

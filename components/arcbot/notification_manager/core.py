@@ -5,11 +5,11 @@ import requests
 from dotenv import load_dotenv
 
 from arcbot.discord_model.core import *
-from arcbot.repository import core as repository
 
 load_dotenv()
 
 send_message = importlib.import_module(os.getenv('SEND_MESSAGE_MODULE')).send_message
+repository = importlib.import_module(os.getenv('REPOSITORY_MODULE'))
 
 
 async def send_notification_messages(client):

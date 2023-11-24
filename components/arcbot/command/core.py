@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 from arcbot.audio_fetcher.core import fetch_audio_file
 from arcbot.bot_action.core import *
-from arcbot.entity.core import Playlist
 from arcbot.log.core import get_logger
 from arcbot.queue_manager.core import add_song, get_queue_song_names, move_song, remove_song
 from arcbot.strings.core import Strings
@@ -57,7 +56,7 @@ async def play(args, context) -> Message:
     reply = play_audio_file(file_name, url, voice_client,
                             lambda: play_next_song(context.channel, voice_client, context.message.guild.id,
                                                    context.client.loop))
-    return await send_message(DiscordMessage(context.channel), reply)
+    return await send_message(context.channel, reply)
 
 
 async def pause(_args, context) -> Message:
@@ -110,7 +109,7 @@ async def remove(args, context) -> Message:
 
 
 async def list_playlists(_args, context) -> Message:
-    playlists: list[Playlist] = repository.get_playlists(str(context.message.guild.id))
+    playlists = repository.get_playlists(str(context.message.guild.id))
     if len(playlists) == 0:
         return await send_message(context.channel, Strings.Error.no_playlists)
     return await send_message(context.channel,

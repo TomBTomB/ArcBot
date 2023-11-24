@@ -1,0 +1,35 @@
+version: "3"
+services:
+  messaging-service:
+    env_file: messaging_service/.env
+    image: "messaging_service:latest"
+    ports:
+      - "127.0.0.1:5001:5001"
+  bot-remote:
+    env_file: bot_remote/.env
+    image: "arcbot_remote:latest"
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - arcbot-data:/var/lib/postgresql/data
+  db-service:
+    env_file: db_service/.env
+    image: "db_service:latest"
+    ports:
+      - "127.0.0.1:5000:5000"
+    depends_on:
+      - postgres
+
+
+networks:
+  db-network:
+    driver: bridge
+
+volumes:
+  arcbot-data:

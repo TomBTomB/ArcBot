@@ -1,8 +1,12 @@
 from arcbot.bot_action.core import Channel, Message
 from arcbot.log.core import get_logger
 import requests
+import os
 
-base_url = 'http://localhost:5001/message'
+from dotenv import load_dotenv
+
+load_dotenv()
+base_url = f'{os.getenv("MESSENGER_URL")}/message'
 logger = get_logger('arcBot-logger')
 
 
