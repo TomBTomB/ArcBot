@@ -269,9 +269,9 @@ commands = {
                           function=poll_force),
     'subscription-topics': Command(name='subscription-topics', description=Strings.Description.subscription_topics,
                                    function=list_topics),
-    'subscribe': Command(name='subscribe', description=Strings.Description.subscription_topics,
+    'subscribe': Command(name='subscribe', description=Strings.Description.subscribe,
                          function=subscribe),
-    'unsubscribe': Command(name='unsubscribe', description=Strings.Description.subscription_topics,
+    'unsubscribe': Command(name='unsubscribe', description=Strings.Description.unsubscribe,
                            function=unsubscribe),
     'subscriptions': Command(name='subscriptions', description=Strings.Description.subscriptions,
                              function=list_subscriptions)

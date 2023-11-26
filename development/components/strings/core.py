@@ -70,6 +70,7 @@ class Strings:
         playlist_info = 'Lists the songs in the playlist with the given name. Usage: `playlist-info <playlist_name>`'
         poll_force = 'Forces a playlist to win the poll.'
         subscribe = 'Subscribes you to a topic.'
+        unsubscribe = 'Unsubscribes you from a topic.'
         subscription_topics = 'Lists all available subscription topics.'
         subscriptions = 'Lists all your subscriptions.'
 
