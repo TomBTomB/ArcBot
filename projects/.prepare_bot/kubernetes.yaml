@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arcbot-deployment
+  labels:
+    app: arcbot
+spec:
+  selector:
+    matchLabels:
+      app: arcbot
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: arcbot
+    spec:
+      containers:
+      - name: arcbot-container
+        image: arcbot:latest
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: arcbot-secret

@@ -15,14 +15,13 @@ packages = [
     { include = "arcbot/command", from = "components" },
     { include = "arcbot/queue_manager", from = "components" },
     { include = "arcbot/strings", from = "components" },
-    { include = "arcbot/entity", from = "components" },
     { include = "arcbot/repository", from = "components" },
     { include = "arcbot/poll_manager", from = "components" },
     { include = "arcbot/notification_manager", from = "components" },
     { include = "arcbot/messenger", from = "components" },
     { include = "arcbot/discord_model", from = "components" },
-    {include = "arcbot/messenger_remote",from = "components"},
-    {include = "arcbot/repository_remote",from = "components"},
+    { include = "arcbot/messenger_remote", from = "components" },
+    { include = "arcbot/repository_remote", from = "components" },
 ]
 
 [tool.poetry.dependencies]
@@ -39,6 +38,7 @@ psycopg2-binary = "^2.9.8"
 schedule = "^1.2.1"
 requests = "^2.31.0"
 flask = { extras = ["async"], version = "^3.0.0" }
+pytest-dotenv = "^0.5.2"
 
 
 [build-system]

@@ -1,15 +1,17 @@
 import datetime
-import importlib
+import os
 
+import discord
 from discord.ext import tasks
 from dotenv import load_dotenv
 from pony.orm import db_session
 
-from development.components.command.core import *
-from development.components.command_parser.core import parse
-from development.components.log.core import get_logger
-from development.components.poll_manager.core import *
-from development.components.notification_manager.core import *
+from arcbot.command.core import *
+from arcbot.command_parser.core import parse
+from arcbot.log.core import get_logger
+from arcbot.poll_manager.core import *
+from arcbot.notification_manager.core import *
+from arcbot.discord_model.core import Message
 
 load_dotenv()
 

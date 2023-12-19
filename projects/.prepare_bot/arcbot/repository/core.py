@@ -5,22 +5,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 db = Database()
-
-if os.getenv('IS_TEST'):
-    db.bind(
-        provider='sqlite',
-        filename=':memory:',
-        create_db=True,
-    )
-else:
-    db.bind(
-        provider='postgres',
-        user=os.getenv("POSTGRES_USER"),
-        password=os.getenv("POSTGRES_PASSWORD"),
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
-        database=os.getenv("POSTGRES_DB"),
-    )
+db.bind(
+    provider='postgres',
+    user=os.getenv("POSTGRES_USER"),
+    password=os.getenv("POSTGRES_PASSWORD"),
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
+    database=os.getenv("POSTGRES_DB"),
+)
 
 
 class Playlist(db.Entity):

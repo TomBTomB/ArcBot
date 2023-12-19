@@ -1,0 +1,39 @@
+[tool.poetry]
+name = 'bot'
+version = '0.1.0'
+description = ''
+authors = ['TomasBruno1 <tomas.bruno@ing.austral.edu.ar>, tomasberretta <tomas.berretta@ing.austral.edu.ar>']
+license = ''
+
+packages = [
+    { include = 'arcbot/bot_client', from = '../../bases' },
+    { include = 'arcbot/audio_fetcher', from = '../../components' },
+    { include = 'arcbot/bot_action', from = '../../components' },
+    { include = 'arcbot/command', from = '../../components' },
+    { include = 'arcbot/command_parser', from = '../../components' },
+    { include = 'arcbot/log', from = '../../components' },
+    { include = "arcbot/queue_manager", from = "../../components" },
+    { include = "arcbot/strings", from = "../../components" },
+    { include = "arcbot/poll_manager", from = "../../components" },
+    { include = "arcbot/notification_manager", from = "../../components" },
+    { include = "arcbot/repository", from = "../../components" },
+    { include = "arcbot/entity", from = "../../components" },
+    { include = "arcbot/discord_model", from = "../../components" },
+    { include = "arcbot/messenger", from = "../../components" },
+]
+
+[tool.poetry.dependencies]
+python = '^3.10'
+python-dotenv = '^1.0.0'
+pynacl = '^1.5.0'
+discord-py = "2.2.2"
+yt-dlp = "^2023.3.4"
+psycopg2-binary = "^2.9.9"
+pony = "^0.7.17"
+requests = "^2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

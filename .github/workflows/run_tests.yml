@@ -45,4 +45,8 @@ jobs:
 
       - run: pip install dist/*.whl
 
+      - name: 'Create env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
       - run: poetry run python -m pytest
